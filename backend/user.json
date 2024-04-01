@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "username": "Romain",
+    "password": "",
+    "role": "ROLE_ADMIN"
+  },
+  {
+    "id": 2,
+    "username": "charlotte",
+    "password": "",
+    "role": "ROLE_RH"
+  },
+  {
+    "id": 3,
+    "username": "theo",
+    "password": "",
+    "role": "ROLE_USER"
+  },
+  {
+    "id": 4,
+    "username": "sacha",
+    "password": "",
+    "role": "ROLE_USER"
+  }
+]
+

@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          RH Manager
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -21,7 +21,6 @@
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
       bordered
     >
       <q-list>
