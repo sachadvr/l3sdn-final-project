@@ -2,39 +2,28 @@
 
 A Quasar Project
 
-## Install the dependencies
+## To start frontend (quasar) & backend nodejs/express
 ```bash
-yarn
-# or
-npm install
-```
-
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
+docker compose up -d
 ```
 
 
 ### Lint the files
 ```bash
-yarn lint
-# or
-npm run lint
+docker exec -it quasar yarn lint
 ```
 
 
 ### Format the files
 ```bash
-yarn format
-# or
-npm run format
+docker exec -it quasar yarn format
 ```
 
 
 
-### Build the app for production
+### Build the app for production (Change API for production & secret keys)
 ```bash
-quasar build
+docker exec -it quasar build
 ```
 
 ### Customize the configuration

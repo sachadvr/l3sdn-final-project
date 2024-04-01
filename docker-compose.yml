@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  quasar:
+    container_name: quasar
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    depends_on:
+      - backend
+    environment:
+      - NODE_ENV=development
+    networks:
+      - quasar_backend_network
+
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - quasar_backend_network
+
+networks:
+  quasar_backend_network:
+    driver: bridge
