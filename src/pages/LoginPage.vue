@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <q-page class="mx-300">
+    <q-page class="p-5">
 
       <q-form @submit="login">
         <q-input v-model="username" label="Nom d'utilisateur" />
@@ -8,7 +7,6 @@
         <q-btn type="submit" label="Se connecter" color="primary" />
       </q-form>
     </q-page>
-  </div>
 </template>
 
 <script setup>
@@ -42,5 +40,8 @@ const login = async () => {
 }
 </script>
 
-<style>
+<style scoped>
+.p-5 {
+  padding: 5rem;
+}
 </style>
