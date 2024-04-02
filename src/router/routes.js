@@ -4,7 +4,7 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresRole: ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_RH'] },
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') }
     ]
@@ -16,6 +16,14 @@ const routes = [
       { path: '', component: () => import('pages/LoginPage.vue') }
     ]
 
+  },
+  {
+    path: '/manage',
+    component: () => import('layouts/MainLayout.vue'),
+    meta: { requiresRole: ['ROLE_ADMIN', 'ROLE_RH'] },
+    children: [
+      { path: '', component: () => import('pages/ManagerList.vue') }
+    ]
   },
   {
     path: '/logout',

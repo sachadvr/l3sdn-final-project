@@ -3,7 +3,7 @@
     <q-avatar>
       <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg" />
     </q-avatar>
-    <q-badge color="primary" :label="user?.roles" />
+    <q-badge color="primary" :label="user?.roles[0]" />
     <q-card>
       <q-card-section>
         <q-card-title>
@@ -84,8 +84,8 @@
 </template>
 
 <script setup>
-import { useAuthStore } from 'src/stores/auth'
 import { onMounted, ref, watch } from 'vue'
+import { useAuthStore } from 'src/stores/auth'
 
 const store = useAuthStore();
 const user = ref(null);

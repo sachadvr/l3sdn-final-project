@@ -2,8 +2,7 @@
   <q-item
     clickable
     tag="a"
-    target="_blank"
-    :href="link"
+    @click="navigateToLink(link)"
   >
     <q-item-section
       v-if="icon"
@@ -21,6 +20,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'EssentialLink',
@@ -29,20 +29,28 @@ export default defineComponent({
       type: String,
       required: true
     },
-
     caption: {
       type: String,
       default: ''
     },
-
     link: {
       type: String,
       default: '#'
     },
-
     icon: {
       type: String,
       default: ''
+    }
+  },
+  setup() {
+    const router = useRouter()
+
+    const navigateToLink = (link) => {
+      router.push(link)
+    }
+
+    return {
+      navigateToLink
     }
   }
 })

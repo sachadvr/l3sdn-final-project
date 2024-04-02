@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null,
+    user: null
   }),
   getters: {
     getToken() {
@@ -12,6 +12,9 @@ export const useAuthStore = defineStore('auth', {
     hasRole(role) {
       return this.user && this.user.roles.includes(role)
     },
+    isLoggedIn() {
+      return !!this.user
+    }
   },
   actions: {
     async login(username, password) {
@@ -43,6 +46,11 @@ export const useAuthStore = defineStore('auth', {
         const response = await axios.post('/api/verifyToken', {}, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
+
+        if (response.status !== 200) {
+          this.logout()
+          return false
+        }
         const { username, role } = response.data
         this.user = {
           username: username,

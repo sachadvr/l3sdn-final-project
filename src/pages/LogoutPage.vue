@@ -17,7 +17,7 @@ const $q = useQuasar()
 
 onMounted(() => {
   useAuthStore().logout()
-  router.push('/')
+  router.push('/login')
 })
 </script>
 

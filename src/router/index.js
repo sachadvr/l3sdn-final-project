@@ -2,6 +2,7 @@ import { route } from 'quasar/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import routes from './routes'
 import {useAuthStore} from '../stores/auth'
+import { useQuasar } from 'quasar'
 
 /*
  * If not building with SSR mode, you can
@@ -28,15 +29,29 @@ export default route(function (/* { store, ssrContext } */) {
   })
 
   Router.beforeEach(async (to, from, next) => {
-    const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-    const user = await useAuthStore().getCurrentUser()
+    const $q = useQuasar()
+    const user = await useAuthStore().getCurrentUser();
+    const requiresRole = to.matched.some(record => record.meta && record.meta.requiresRole);
+    if (requiresRole) {
+      const userRole = user && user.roles;
+      const isAllowed = user && to.matched.some(record => record.meta.requiresRole && record.meta.requiresRole.some(role => userRole.includes(role)));
 
-    if (requiresAuth && !user) {
-      next('/login')
+      if (!isAllowed && user) {
+        $q.notify('Tu n\'as pas les droits pour accéder à cette page');
+        next(from);
+      }
+      if (!isAllowed && !user) {
+        $q.notify('Tu dois être connecté pour accéder à cette page');
+        next('/login');
+      } else {
+        next();
+      }
     } else {
-      next()
+      next();
     }
-  })
+  });
+
 
   return Router
+
 })
