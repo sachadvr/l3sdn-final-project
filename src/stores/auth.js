@@ -20,9 +20,9 @@ export const useAuthStore = defineStore('auth', {
     async login(username, password) {
       try {
         const response = await axios.post('/api/login', { username, password })
-        console.log('Login response:', response.data)
         const { user, token } = response.data
         this.user = {
+          id: user.id,
           username: user.username,
           roles: [user.role]
         }
@@ -51,8 +51,9 @@ export const useAuthStore = defineStore('auth', {
           this.logout()
           return false
         }
-        const { username, role } = response.data
+        const { id, username, role } = response.data
         this.user = {
+          id: id,
           username: username,
           roles: [role]
         }

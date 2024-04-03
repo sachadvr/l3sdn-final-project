@@ -54,7 +54,8 @@ const leftDrawerOpen = ref(false)
 
 const essentialLinks = ref([
     { title: 'Dashboard', caption: '', icon: 'home', link: '/' },
-    { title: 'Manager List', caption: '', icon: 'people', link: '/manage' }
+    { title: 'Manager List', caption: '', icon: 'people', link: '/manage' },
+    { title: 'Mes entretiens', caption: '', icon: 'assignment', link: '/interviews'}
   ]);
 
 const toggleLeftDrawer = () => {
