@@ -8,7 +8,7 @@ WORKDIR /app/backend
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install && npm install -g nodemon
 
 # Copy the rest of the backend code to the container
 COPY . .
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Command to run the backend server
-CMD ["npm", "start"]
+CMD ["nodemon", "server.js"]
