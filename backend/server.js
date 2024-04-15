@@ -59,6 +59,30 @@ app.post('/api/verifyToken', verifyToken, (req, res) => {
   res.json(req.user)
 })
 
+app.get('/api/users/:customId', verifyToken, (req, res) => {
+  const customId = req.params.customId;
+
+  fs.readFile('user.json', 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: 'Impossible de lire les utilisateurs' });
+    }
+
+    try {
+      const users = JSON.parse(data);
+      const user = users.find(u => {
+        return u.id == customId;
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      }
+
+      res.json(user);
+    } catch (parseError) {
+      res.status(500).json({ message: 'Impossible de lire les utilisateurs' });
+    }
+  });
+});
 app.get('/api/users', verifyToken, (req, res) => {
   fs.readFile('user.json', 'utf8', (err, data) => {
     if (err) {
@@ -70,11 +94,11 @@ app.get('/api/users', verifyToken, (req, res) => {
 
       const managerId = req.query.manager_id;
       if (isGranted(req.user, 'ROLE_RH')) {
-        res.json(users.filter(u => u.role === 'ROLE_USER').map(u => ({ username: u.username, name: u.name, firstname: u.firstname })))
+        res.json(users.filter(u => u.role === 'ROLE_USER').map(u => ({ id: u.id, name: u.name, firstname: u.firstname })))
         return
       }
       if (managerId) {
-        res.json(users.filter(u => u.manager_id == managerId).map(u => ({ username: u.username, name: u.name, firstname: u.firstname })))
+        res.json(users.filter(u => u.manager_id == managerId).map(u => ({ id: u.id, name: u.name, firstname: u.firstname })))
         return
       }
       res.json(users.map(u => ({ username: u.username, role: u.role, manager_id: u.manager_id })))
@@ -83,6 +107,42 @@ app.get('/api/users', verifyToken, (req, res) => {
     }
   })
 })
+
+app.patch('/api/users/:id', verifyToken, (req, res) => {
+  const userId = parseInt(req.params.id);
+  const updatedUserData = req.body;
+
+  fs.readFile('user.json', 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: 'Impossible de lire les utilisateurs' });
+    }
+
+    try {
+      const users = JSON.parse(data);
+      const userIndex = users.findIndex(u => u.id === userId);
+
+      if (userIndex === -1) {
+        return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      }
+
+      const existingUser = users[userIndex];
+      const updatedUser = { ...existingUser, ...updatedUserData };
+      users[userIndex] = updatedUser;
+
+      fs.writeFile('user.json', JSON.stringify(users), 'utf8', err => {
+        if (err) {
+          return res.status(500).json({ message: 'Impossible de mettre à jour l\'utilisateur' });
+        }
+
+        res.json(updatedUser);
+      });
+    } catch (parseError) {
+      res.status(500).json({ message: 'Impossible de lire les utilisateurs' });
+    }
+  });
+});
+
+
 
 const port = 3000
 app.listen(port, () => {

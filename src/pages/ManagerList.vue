@@ -54,7 +54,7 @@ const editRow = (row) => {
 };
 
 const onRowClick = (evt, row) => {
-  const currentRow = rows.value.find((r) => r.nom === row.nom);
+  const currentRow = rows.value.find((r) => r.id === row.id);
   editRow(currentRow);
 };
 </script>
