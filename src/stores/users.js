@@ -9,6 +9,18 @@ export const useUserStore = defineStore('users', {
   getters: {
   },
   actions: {
+    async getUser(id) {
+      try {
+        const response = await axios.get(`/api/users/${id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Failed to fetch user:', error)
+        return false
+      }
+    }
+    ,
     async getUsers() {
       try {
         const response = await axios.get('/api/users', {}, {
@@ -38,6 +50,17 @@ export const useUserStore = defineStore('users', {
         return true
       } catch (error) {
         console.error('Token verification failed:', error)
+        return false
+      }
+    },
+    async update(id, data) {
+      try {
+        const response = await axios.patch(`/api/users/${id}`, data, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Failed to update user:', error)
         return false
       }
     }
