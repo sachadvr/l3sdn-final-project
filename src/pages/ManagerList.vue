@@ -1,6 +1,5 @@
 <template>
   <div class="q-pa-md">
-<!--    add search -->
     <q-input
       v-model="filter"
       filled
@@ -33,43 +32,27 @@
 import { useAuthStore } from 'src/stores/auth'
 import { onMounted, ref } from 'vue'
 import EditForm from 'components/PopupManager.vue'
+import { useUserStore } from 'src/stores/users'
+const auth_store = useAuthStore();
+const user_store = useUserStore();
 
-const store = useAuthStore();
 const user = ref(null);
-const rows = ref([
-  {
-    id: 1,
-    nom: 'Sacha Duvivier',
-    poste: 'Développeur',
-    age: 22,
-    surname: 'Sacha',
-    manager: 'Geoffrey Pecro',
-    employee: true
-  },
-  {
-    id: 2,
-    nom: 'Geoffrey Pecro',
-    poste: 'Manager',
-    age: 30,
-    surname: 'Geoff',
-    manager: 'Charles De Potter',
-    employee: true
-    }
-]);
-
+const rows = ref([]);
 const filter = ref('');
 const show = ref(false);
 const editedRow = ref({});
 
 onMounted(async () => {
-  user.value = await store.getCurrentUser();
+  user.value = await auth_store.getCurrentUser();
+    await user_store.getUserByManager(user.value.id);
+    rows.value = user_store.userByManager;
 });
 
 const editRow = (row) => {
   editedRow.value = { ...row };
-  console.log('Editing row:', editedRow.value);
   show.value = true;
 };
+
 const onRowClick = (evt, row) => {
   const currentRow = rows.value.find((r) => r.nom === row.nom);
   editRow(currentRow);
