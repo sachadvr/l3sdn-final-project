@@ -148,3 +148,51 @@ const port = 3000
 app.listen(port, () => {
   console.log(`Le backend est lancé sur http://localhost:${port} -> Proxy vers http://localhost:9000/api`)
 })
+
+app.get('/api/interviews/:userid', verifyToken, (req, res) => {
+  fs.readFile('interviews.json', 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: 'Impossible de lire les entretiens' })
+    }
+
+    try {
+      const interviews = JSON.parse(data)
+      console.log(interviews)
+      res.json(interviews.filter(i => i.user_id == req.params.userid))
+    } catch (parseError) {
+      res.status(500).json({ message: 'Impossible de lire les entretiens' })
+    }
+  })
+})
+
+app.post('/api/interviews/add-to-json', verifyToken, (req, res) => {
+  fs.readFile('interviews.json', 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: 'Impossible de lire les entretiens' });
+    }
+
+    try {
+      const interviews = JSON.parse(data);
+      const newInterview = {
+        id: req.body.id,
+        user_id: req.body.user_id,
+        date: req.body.date,
+        resume: req.body.resume,
+        created_at: new Date().toISOString(),
+        manager_id: req.user.manager_id,
+      };
+
+      interviews.push(newInterview);
+
+      fs.writeFile('interviews.json', JSON.stringify(interviews), 'utf8', (err) => {
+        if (err) {
+          return res.status(500).json({ message: 'Erreur lors de l\'ajout de l\'entretien' });
+        }
+
+        res.status(200).json({ message: 'Entretien ajouté avec succès au fichier JSON' });
+      });
+    } catch (parseError) {
+      res.status(500).json({ message: 'Impossible de lire les entretiens' });
+    }
+  });
+});
