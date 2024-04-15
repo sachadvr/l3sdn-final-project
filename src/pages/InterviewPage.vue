@@ -57,21 +57,59 @@ import { ref } from 'vue'
 import { useAuthStore } from 'src/stores/auth'
 import { useInterviewsStore } from 'src/stores/interviews'
 import { onMounted } from 'vue'
+import { useObjectifsStore } from 'src/stores/objectifs'
 
 const user = ref(null)
 const interviews = ref([])
+const objectifs = ref([])
 const tab = ref('interview')
 const auth_store = useAuthStore();
 const interviews_store = useInterviewsStore();
-import { useObjectifsStore } from 'src/stores/objectifs'
+const objectif_store = useObjectifsStore();
+
 
 onMounted(async () => {
   user.value = await auth_store.getCurrentUser();
   if (await interviews_store.fetchInterviews(user.value.id)) {
     interviews.value = interviews_store.interviews
   }
+  if (await objectif_store.fetchObjectifs(user.value.id)) {
+    objectifs.value = objectif_store.objectifs
+  }
 
 });
+
+const addObjectif = async () => {
+  const date = prompt('Date de l\'objectif (format: YYYY-MM-DD) :');
+  const resume = prompt('Description de l\'objectif :');
+
+  if (date && resume) {
+    const response = await axios.post('/api/objectifs', {
+      user_id: user.value.id,
+      date,
+      resume,
+    }, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+
+    if (response.status === 201) {
+      await objectifs_store.fetchObjectifs(user.value.id);
+      objectifs.value = objectif_store.objectifs;
+
+      const objectifToAdd = {
+        id: response.data.objectif_id,
+        user_id: user.value.id,
+        date,
+        resume,
+      };
+      await axios.post('/api/objectifs/add-to-json', objectifToAdd);
+
+      console.log('Objectif ajouté avec succès');
+    } else {
+      console.error('Erreur lors de l\'ajout de l\'objectif');
+    }
+  }
+};
 
 const addInterview = async () => {
   const date = prompt('Date de l\'entretien (format: YYYY-MM-DD) :');
