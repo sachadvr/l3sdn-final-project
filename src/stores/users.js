@@ -29,7 +29,7 @@ export const useUserStore = defineStore('users', {
         this.users = response.data
         return true
       } catch (error) {
-        console.error('Login failed:', error)
+        conso.error('Login failed:', error)
         return false
       }
     },

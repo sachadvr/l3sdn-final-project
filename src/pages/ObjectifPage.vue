@@ -6,31 +6,22 @@
         class="text-grey"
         active-color="primary"
         indicator-color="primary"
-        align="justify"
-      >
+        align="justify">
         <q-tab name="interview" label="Travail effectué cette année" />
         <q-tab name="obj" label="Objectifs" />
         <q-tab name="obj-next" label="Objectifs de l'année prochaine" />
       </q-tabs>
 
-      <q-separator />
+      <q-separator/>
 
       <q-tab-panels v-model="tab">
         <q-tab-panel name="interview">
           <div class="text-h6">Le récap de mes interviews</div>
-
-          <q-card v-for="interview in interviews" :key="interview.id">
-            <q-card-section>
-              <div class="text-h6">Interview du {{ interview.date }}</div>
-              <div class="text-subtitle2">Résumé</div>
-              <div>{{ interview.resume }}</div>
-            </q-card-section>
-          </q-card>
-          <q-btn color="primary" label="Ajouter un nouvel entretien" class="q-mt-md" @click="addInterview"/>
         </q-tab-panel>
 
         <q-tab-panel name="obj">
           <div class="text-h6">Mes objectifs de cette année</div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
 
           <q-card v-for="objectif in objectifs" :key="objectif.id">
             <q-card-section>
@@ -40,7 +31,6 @@
             </q-card-section>
           </q-card>
           <q-btn color="primary" label="Ajouter un nouvel objectif" class="q-mt-md" @click="addObjectif"/>
-
         </q-tab-panel>
 
         <q-tab-panel name="obj-next">
@@ -55,30 +45,29 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuthStore } from 'src/stores/auth'
-import { useInterviewsStore } from 'src/stores/interviews'
+import { useObjectifsStore } from 'src/stores/objectifs'
 import { onMounted } from 'vue'
 
 const user = ref(null)
-const interviews = ref([])
-const tab = ref('interview')
+const objectifs = ref([])
+const tab = ref('objectif')
 const auth_store = useAuthStore();
-const interviews_store = useInterviewsStore();
-import { useObjectifsStore } from 'src/stores/objectifs'
+const objectif_store = useObjectifsStore();
 
 onMounted(async () => {
   user.value = await auth_store.getCurrentUser();
-  if (await interviews_store.fetchInterviews(user.value.id)) {
-    interviews.value = interviews_store.interviews
+  if (await objectif_store.fetchObjectifs(user.value.id)) {
+    objectifs.value = objectif_store.objectifs
   }
 
 });
 
-const addInterview = async () => {
-  const date = prompt('Date de l\'entretien (format: YYYY-MM-DD) :');
-  const resume = prompt('Résumé de l\'entretien :');
+const addObjectif = async () => {
+  const date = prompt('Date de l\'objectif (format: YYYY-MM-DD) :');
+  const resume = prompt('Description de l\'objectif :');
 
   if (date && resume) {
-    const response = await axios.post('/api/interviews', {
+    const response = await axios.post('/api/objectifs', {
       user_id: user.value.id,
       date,
       resume,
@@ -87,20 +76,20 @@ const addInterview = async () => {
     });
 
     if (response.status === 201) {
-      await interviews_store.fetchInterviews(user.value.id);
-      interviews.value = interviews_store.interviews;
+      await objectifs_store.fetchObjectifs(user.value.id);
+      objectifs.value = objectif_store.objectifs;
 
-      const interviewToAdd = {
-        id: response.data.interview_id,
+      const objectifToAdd = {
+        id: response.data.objectif_id,
         user_id: user.value.id,
         date,
         resume,
       };
-      await axios.post('/api/interviews/add-to-json', interviewToAdd);
+      await axios.post('/api/objectifs/add-to-json', objectifToAdd);
 
-      console.log('Entretien ajouté avec succès');
+      console.log('Objectif ajouté avec succès');
     } else {
-      console.error('Erreur lors de l\'ajout de l\'entretien');
+      console.error('Erreur lors de l\'ajout de l\'objectif');
     }
   }
 };

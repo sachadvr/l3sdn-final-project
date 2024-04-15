@@ -11,11 +11,11 @@ const isGranted = (user, role) => {
 }
 const secretKey = 'ADZHUZAI123'
 app.post('/api/login', (req, res) => {
-  const {username, password} = req.body
+  const { username, password } = req.body
 
   fs.readFile('user.json', 'utf8', (err, data) => {
     if (err) {
-      return res.status(500).json({message: 'Impossible de lire les utilisateurs'})
+      return res.status(500).json({ message: 'Impossible de lire les utilisateurs' })
     }
 
     try {
@@ -24,14 +24,14 @@ app.post('/api/login', (req, res) => {
       const user = users.find(u => u.username === username && u.password === password)
 
       if (user) {
-        const token = jwt.sign({id: user.id, username: user.username, role: user.role}, secretKey, {expiresIn: '1h'})
+        const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, secretKey, { expiresIn: '1h' })
 
         res.json({ user: { id: user.id, username: user.username, role: user.role }, token })
       } else {
-        res.status(401).json({message: 'Nom d\'utilisateur ou mot de passe incorrect'})
+        res.status(401).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' })
       }
     } catch (parseError) {
-      res.status(500).json({message: 'Impossible de lire les users'})
+      res.status(500).json({ message: 'Impossible de lire les users' })
     }
   })
 })
@@ -42,7 +42,7 @@ const verifyToken = (req, res, next) => {
     token = token.slice(7, token.length)
   }
   if (!token) {
-    return res.status(403).json({message: 'Aucun Bearer Token n\'a été fourni'})
+    return res.status(403).json({ message: 'Aucun Bearer Token n\'a été fourni' })
   }
 
   jwt.verify(token, secretKey, (err, decoded) => {
@@ -148,3 +148,51 @@ const port = 3000
 app.listen(port, () => {
   console.log(`Le backend est lancé sur http://localhost:${port} -> Proxy vers http://localhost:9000/api`)
 })
+
+app.get('/api/interviews/:userid', verifyToken, (req, res) => {
+  fs.readFile('interviews.json', 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: 'Impossible de lire les entretiens' })
+    }
+
+    try {
+      const interviews = JSON.parse(data)
+      console.log(interviews)
+      res.json(interviews.filter(i => i.user_id == req.params.userid))
+    } catch (parseError) {
+      res.status(500).json({ message: 'Impossible de lire les entretiens' })
+    }
+  })
+})
+
+app.post('/api/interviews/add-to-json', verifyToken, (req, res) => {
+  fs.readFile('interviews.json', 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: 'Impossible de lire les entretiens' });
+    }
+
+    try {
+      const interviews = JSON.parse(data);
+      const newInterview = {
+        id: req.body.id,
+        user_id: req.body.user_id,
+        date: req.body.date,
+        resume: req.body.resume,
+        created_at: new Date().toISOString(),
+        manager_id: req.user.manager_id,
+      };
+
+      interviews.push(newInterview);
+
+      fs.writeFile('interviews.json', JSON.stringify(interviews), 'utf8', (err) => {
+        if (err) {
+          return res.status(500).json({ message: 'Erreur lors de l\'ajout de l\'entretien' });
+        }
+
+        res.status(200).json({ message: 'Entretien ajouté avec succès au fichier JSON' });
+      });
+    } catch (parseError) {
+      res.status(500).json({ message: 'Impossible de lire les entretiens' });
+    }
+  });
+});
