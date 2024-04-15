@@ -12,6 +12,7 @@ services:
       - backend
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=1
     volumes:
       - .:/app
       - /app/node_modules
