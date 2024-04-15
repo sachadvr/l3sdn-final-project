@@ -45,7 +45,16 @@
 
         <q-tab-panel name="obj-next">
           <div class="text-h6">Objectifs de l'année prochaine</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+
+          <q-card v-for="objectif in objectifs" :key="objectif.id">
+            <q-card-section>
+              <div class="text-h6">Objectif du {{ objectif.date }}</div>
+              <div class="text-subtitle2">Decription</div>
+              <div>{{ objectif.resume }}</div>
+            </q-card-section>
+          </q-card>
+          <q-btn color="primary" label="Ajouter un nouvel objectif" class="q-mt-md" @click="addObjectif"/>
+
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
