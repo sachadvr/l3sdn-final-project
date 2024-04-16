@@ -67,7 +67,7 @@
           </q-card-subtitle>
         </q-card-section>
       </q-card>
-      <q-card>
+      <q-card v-if="user && user.roles.some(r => r === 'ROLE_ADMIN' || r === 'ROLE_RH')">
         <q-card-section>
           <q-card-title>
             Liste des managés
@@ -115,7 +115,6 @@ onMounted(async () => {
     nextPersonalInterview.value = interviewStore.interviews && interviewStore.interviews[0] ? new Date(interviewStore.interviews[0].date).toLocaleDateString() : 'Aucun entretiens perso prévu';
   }
   if (await interviewStore.getInterviewByManager(user.value.id)) {
-    console.log(interviewStore.manager_interviews)
     nextInterview.value = interviewStore.manager_interviews && interviewStore.manager_interviews[0] ? new Date(interviewStore.manager_interviews[0].date).toLocaleDateString() : 'Aucun entretien prévu';
   }
   if (await userStore.getUsers())  {

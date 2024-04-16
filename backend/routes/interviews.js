@@ -22,7 +22,7 @@ router.get('/:userid', async (req, res) => {
 router.post('/', async (req, res) => {
     const data = await getData('interviews', res);
     data.push(req.body);
-    
+
     res.json(data);
 });
 

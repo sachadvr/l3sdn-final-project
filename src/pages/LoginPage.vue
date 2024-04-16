@@ -1,7 +1,8 @@
 <template>
-    <q-page class="p-5">
+    <q-page class="p-5 flex items-center">
 
-      <q-form @submit="login">
+      <q-form class="form" @submit="login">
+        <h2 class="text-h6">Se connecter</h2>
         <q-input v-model="username" label="Nom d'utilisateur" />
         <q-input v-model="password" label="Mot de passe" type="password" />
         <q-btn type="submit" label="Se connecter" color="primary" />
@@ -43,5 +44,22 @@ const login = async () => {
 <style scoped>
 .p-5 {
   padding: 5rem;
+  background: url('../assets/bg.png') no-repeat center center;
+  background-size: cover;
+}
+.flex {
+  display: flex;
+  justify-content: center;
+}
+.items-center {
+  align-items: center;
+}
+.form {
+  max-width: 400px;
+  width: 100%;
+  padding: 2rem;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 </style>
