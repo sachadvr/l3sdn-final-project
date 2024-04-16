@@ -1,5 +1,4 @@
 const express = require('express');
-require('dotenv').config();
 const app = express();
 
 // Middleware
@@ -21,7 +20,6 @@ app.use('/api/interviews', authMiddleware, interviewsRoutes);
 app.use('/api/objectives', authMiddleware, objectivesRoutes);
 
 // Configuration du serveur
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Le serveur fonctionne sur le port ${PORT}`);
+app.listen(3000, () => {
+  console.log('Le serveur fonctionne sur le port 3000');
 });
