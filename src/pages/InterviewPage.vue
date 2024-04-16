@@ -49,6 +49,7 @@ import { useAuthStore } from 'src/stores/auth';
 import { useInterviewsStore } from 'src/stores/interviews';
 import { useObjectifsStore } from 'src/stores/objectifs';
 import { onMounted } from 'vue';
+import axios from 'axios';
 import ObjectifPage from 'pages/ObjectifPage.vue';
 const user = ref(null);
 const interviews = ref([]);
@@ -83,27 +84,42 @@ onMounted(async () => {
 });
 
 const addInterview = async () => {
-    const date = prompt("Date de l'entretien (format: YYYY-MM-DD):");
-    const resume = prompt("Résumé de l'entretien:");
-    if (date && resume) {
-        try {
-            const response = await axios.post('/api/interviews', {
-                user_id: user.value.id,
-                date,
-                resume,
-            }, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            });
+  const date = prompt("Date de l'entretien (format: YYYY-MM-DD):");
+  const resume = prompt("Résumé de l'entretien:");
+  const created_at = new Date().toISOString();
+  if (date && resume) {
+    try {
+      let managerId = null;
+      // Si l'utilisateur est un admin ou un manager, demandez le manager_id
+      if (user.value.roles[0] === 'ROLE_ADMIN' || user.value.roles[0] === 'ROLE_MANAGER') {
+        managerId = prompt("ID du manager avec qui vous avez l'entretien:");
+      } else {
+        // Sinon, utilisez automatiquement le manager de l'utilisateur courant
+        managerId = user.value.manager_id;
+      }
+      managerId = parseInt(managerId);
+      const response = await axios.post(
+        '/api/interviews',
+        {
+          user_id: user.value.id,
+          manager_id: managerId,
+          date,
+          resume,
+          created_at,
 
-            if (response.status === 201) {
-                // Assuming that the API returns the complete updated list of interviews:
-                interviews.value = await interviews_store.fetchInterviews(user.value.id);
-                console.log('Entretien ajouté avec succès');
-            }
-        } catch (error) {
-            console.error("Erreur lors de l'ajout de l'entretien:", error);
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         }
+      );
+      if (response.status === 201) {
+        interviews.value = await interviews_store.fetchInterviews(user.value.id);
+        console.log('Entretien ajouté avec succès');
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de l'entretien:", error);
     }
+  }
 };
-
 </script>
+

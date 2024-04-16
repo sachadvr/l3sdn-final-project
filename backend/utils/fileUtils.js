@@ -1,31 +1,25 @@
-const fs = require('fs').promises;
+const fs = require('fs');
+const path = require('path');
 
-const getData = async (entity, res) => {
+function getData(type, res) {
   try {
-    const filePath = `data/${entity}.json`;
-    const data = await fs.readFile(__dirname + '/../' + filePath, 'utf8');
-    console.log(data)
+    const dataPath = path.join(__dirname, '..', 'data', `${type}.json`);
+    const data = fs.readFileSync(dataPath, 'utf8');
     return JSON.parse(data);
   } catch (error) {
-    res.status(500).json({ message: `Erreur de lecture des ${entity}`,
-      error: error.message });
-    return null;
+    res.status(500).send('Failed to read data');
   }
-};
+}
 
-const writeData = async (entity, data, res) => {
+function saveData(type, data, res) {
   try {
-    const filePath = `data/${entity}.json`;
-    await fs.writeFile(__dirname
-      + '/../' + filePath, JSON.stringify(data), 'utf8');
-
+    const dataPath = path.join(__dirname, '..', 'data', `${type}.json`);
+    fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), 'utf8');
     return true;
-
   } catch (error) {
-    res.status(500).json({ message: `Erreur d'écriture des ${entity}`,
-      error: error.message });
+    res.status(500).send('Failed to save data');
     return false;
   }
 }
 
-module.exports = { getData, writeData };
+module.exports = { getData, saveData };

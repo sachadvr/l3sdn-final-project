@@ -1,13 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getData, saveData } = require('../utils/fileUtils');  // Ensure these are correctly implemented
+const { getData, saveData } = require('../utils/fileUtils');
 
-// Helper to assign new ID
-const assignNewId = (data) => {
-    if (data.length === 0) return 1;
-    const maxId = Math.max(...data.map(item => item.id));
-    return maxId + 1;
-};
+const isGranted = (user, role) => user && user.role === role;
 
 // GET all interviews or filter by manager_id
 router.get('/', async (req, res) => {
@@ -20,7 +15,7 @@ router.get('/', async (req, res) => {
             res.json(data);
         }
     } catch (error) {
-        res.status(500).json({ message: 'Failed to retrieve interviews', error: error.toString() });
+        res.status(500).json({ message: 'Échec de la récupération des entretiens', error: error.toString() });
     }
 });
 
@@ -32,30 +27,43 @@ router.get('/:userid', async (req, res) => {
         if (userInterviews.length > 0) {
             res.json(userInterviews);
         } else {
-            res.status(404).json({ message: 'No interviews found for this user' });
+            res.status(404).json({ message: 'Aucun entretien trouvé pour cet utilisateur' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Failed to retrieve interviews', error: error.toString() });
+        res.status(500).json({ message: 'Échec de la récupération des entretiens', error: error.toString() });
     }
 });
 
 // POST a new interview
+// POST a new interview
 router.post('/', async (req, res) => {
     try {
         const data = await getData('interviews');
+        const { date, resume } = req.body;
+        const user_id = req.user.id; // Récupérer l'ID de l'utilisateur à partir des informations d'authentification
+        const manager_id = req.user.manager_id; // Récupérer l'ID du manager de l'utilisateur à partir des informations d'authentification
+        const created_at = new Date().toISOString(); // Obtenir la date de création au format ISO
+
         const newInterview = {
-            ...req.body,
-            id: assignNewId(data)
+            id: data.length + 1,
+            user_id,
+            date,
+            resume,
+            created_at,
+            manager_id
         };
+
         data.push(newInterview);
+
         if (await saveData('interviews', data)) {
             res.status(201).json(newInterview);
         } else {
             res.status(500).json({ message: 'Failed to save new interview' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Failed to process request', error: error.toString() });
+        res.status(500).json({ message: 'Failed to process request', error: error.message });
     }
 });
+
 
 module.exports = router;

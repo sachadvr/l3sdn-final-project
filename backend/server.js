@@ -17,6 +17,7 @@ app.use(express.json());
 app.use('/api/users', authMiddleware, usersRoutes);
 app.use('/api/login', loginRoutes);
 app.use('/api/interviews', authMiddleware, interviewsRoutes);
+app.use('/api/interviews', interviewsRoutes);
 app.use('/api/objectives', authMiddleware, objectivesRoutes);
 
 // Configuration du serveur
