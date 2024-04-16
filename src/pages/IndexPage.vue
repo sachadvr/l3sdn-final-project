@@ -71,6 +71,7 @@
         <q-card-section>
           <q-card-title>
             Liste des managés
+            <ManagerView />
           </q-card-title>
         </q-card-section>
         <q-card-section>
@@ -90,6 +91,7 @@ import { useAuthStore } from 'src/stores/auth';
 import { useUserStore } from 'src/stores/users';
 import { useObjectifsStore } from 'src/stores/objectifs'
 import { useInterviewsStore } from 'src/stores/interviews'
+import ManagerView from 'components/ManagerView.vue'
 
 const user = ref(null);
 const numberOfManagees = ref(0);

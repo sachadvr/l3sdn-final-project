@@ -40,6 +40,7 @@ const form = ref({
 
 const cancel = () => {
   persistent.value = false
+  emits('update', false)
 }
 onMounted(async () => {
   await user_store.getUser(props.editedRow.id)
