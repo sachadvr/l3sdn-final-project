@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', {
         if (!localStorage.getItem('token')) {
           return false
         }
-        const response = await axios.post('/api/verifyToken', {}, {
+        const response = await axios.post('/api/login/verify', {}, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
 

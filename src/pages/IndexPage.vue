@@ -39,7 +39,7 @@
         </q-card-section>
         <q-card-section>
           <q-card-subtitle>
-            {{ nextInterview.date }} - {{ nextInterview.type }}
+            {{ nextInterview }}
           </q-card-subtitle>
         </q-card-section>
       </q-card>
@@ -63,7 +63,7 @@
         </q-card-section>
         <q-card-section>
           <q-card-subtitle>
-            {{ nextPersonalInterview.date }} - {{ nextPersonalInterview.type }}
+            {{ nextPersonalInterview }}
           </q-card-subtitle>
         </q-card-section>
       </q-card>
@@ -88,6 +88,8 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from 'src/stores/auth';
 import { useUserStore } from 'src/stores/users';
+import { useObjectifsStore } from 'src/stores/objectifs'
+import { useInterviewsStore } from 'src/stores/interviews'
 
 const user = ref(null);
 const numberOfManagees = ref(0);
@@ -97,15 +99,31 @@ const nextPersonalInterview = ref('');
 const userAvatar = ref('https://cdn.quasar.dev/logo/svg/quasar-logo.svg');
 const authStore = useAuthStore();
 const userStore = useUserStore();
+const objectifStore = useObjectifsStore();
+const interviewStore = useInterviewsStore();
 const router = useRouter();
 
 onMounted(async () => {
   user.value = await authStore.getCurrentUser();
-  // Fetching data for managees, interviews, etc.
-  numberOfManagees.value = await userStore.getManagedUsers(user.value.id).length;
-  nextInterview.value = await userStore.getNextInterview(user.value.id);
-  myManager.value = await userStore.getUserById(user.value.manager_id);
-  nextPersonalInterview.value = await userStore.getNextPersonalInterview(user.value.id);
+  if (await userStore.getUserByManager(user.value.id)) {
+    numberOfManagees.value = userStore.userByManager.length;
+  }
+
+  if (await interviewStore.fetchInterviews(user.value.id)) {
+    nextPersonalInterview.value = interviewStore.interviews && interviewStore.interviews[0] ? new Date(interviewStore.interviews[0].date).toLocaleDateString() : 'Aucun entretiens perso prévu';
+  }
+  if (await interviewStore.getInterviewByManager(user.value.id)) {
+    console.log(interviewStore.manager_interviews)
+    nextInterview.value = interviewStore.manager_interviews && interviewStore.manager_interviews[0] ? new Date(interviewStore.manager_interviews[0].date).toLocaleDateString() : 'Aucun entretien prévu';
+  }
+  if (await userStore.getUsers())  {
+  let hasManager = userStore.users.find((u) => u.id === user.value.id)?.manager_id;
+  if (!hasManager) {
+    myManager.value = 'Aucun manager';
+    return;
+  }
+    myManager.value = userStore.users.find((u) => u.id === hasManager).username;
+  }
 });
 </script>
 

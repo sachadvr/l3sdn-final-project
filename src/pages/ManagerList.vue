@@ -20,7 +20,11 @@
       @row-click="onRowClick"
     >
     </q-table>
-      <EditForm v-if="show" :editedRow="editedRow" @update="(val) => show = val" @edit="(data) => {
+      <EditForm v-if="show" :editedRow="editedRow" @update="(val) => {
+        show = val;
+
+        fetchRows();
+      }" @edit="(data) => {
         const index = rows.findIndex((r) => r.id === data.id);
         rows[index] = data;
 
@@ -42,10 +46,15 @@ const filter = ref('');
 const show = ref(false);
 const editedRow = ref({});
 
+
+async function fetchRows() {
+  await user_store.getUserByManager(user.value.id);
+  rows.value = user_store.userByManager;
+}
+
 onMounted(async () => {
   user.value = await auth_store.getCurrentUser();
-    await user_store.getUserByManager(user.value.id);
-    rows.value = user_store.userByManager;
+  await fetchRows();
 });
 
 const editRow = (row) => {

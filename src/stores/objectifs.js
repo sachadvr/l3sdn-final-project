@@ -6,9 +6,10 @@ export const useObjectifsStore = defineStore('objectifs', {
     objectifs: []
   }),
   actions: {
-    async fetchobjectifs(userid) {
+    async fetchObjectifs(userid, filters = {}) {
       try {
-        const response = await axios.get(`/api/objectifs/${userid}`, {
+
+        const response = await axios.get(`/api/objectives/${userid}?${new URLSearchParams(filters)}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         this.objectifs = response.data

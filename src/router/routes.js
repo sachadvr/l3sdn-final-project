@@ -28,7 +28,7 @@ const routes = [
   {
     path: '/interviews',
     component: () => import('layouts/MainLayout.vue'),
-    meta: { requiresRole: ['ROLE_ADMIN', 'ROLE_RH'] },
+    meta: { requiresRole: ['ROLE_USER','ROLE_ADMIN', 'ROLE_RH'] },
     children: [
       { path: '', component: () => import('pages/InterviewPage.vue') }
     ]

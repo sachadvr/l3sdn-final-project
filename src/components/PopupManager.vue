@@ -26,6 +26,7 @@ const props = defineProps({
   editedRow: Object
 })
 
+
 const emits = defineEmits(['update', 'edit'])
 
 const persistent = ref(true)
@@ -41,22 +42,21 @@ const cancel = () => {
   persistent.value = false
 }
 onMounted(async () => {
-  let data = await user_store.getUser(props.editedRow.id)
+  await user_store.getUser(props.editedRow.id)
+  const user = user_store.currentuser
   form.value = {
-    id: data.id,
-    name: data.name,
-    firstname: data.firstname,
-    job: data.job,
+    id: user.id,
+    name: user.name,
+    firstname: user.firstname,
+    job: user.job,
   }
 
 });
-watch(persistent, (val) => {
-  if (!val) {
-    emits('update', val)
-  }
-})
+
 const submit = () => {
-  user_store.update(form.value.id, form.value)
-  persistent.value = false
+  user_store.update(form.value.id, form.value).then(() => {
+    emits('update', false)
+    persistent.value = false
+  })
 }
 </script>
