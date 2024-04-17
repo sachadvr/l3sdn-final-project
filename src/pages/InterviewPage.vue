@@ -146,7 +146,6 @@ import {useRouter} from 'vue-router'
 
 const $q = useQuasar()
 const router = useRouter()
-console.log(router)
 import ObjectifPage from 'pages/ObjectifPage.vue'
 import PopupManager from 'components/PopupManager.vue'
 
@@ -209,6 +208,8 @@ const objectif_store = useObjectifsStore()
 const user_store = useUserStore()
 let userList = []
 
+
+// A cause du parallélisme obligé de mettre plusieurs onMounted ou setTimeout, c'est un comportement très bizarre...
 onMounted(async () => {
   user.value = await auth_store.getCurrentUser()
   if (await interviews_store.fetchInterviews(user.value.id)) {
@@ -258,7 +259,6 @@ onMounted(async () => {
     user.value.id,
     new Date().getFullYear() + 1
   )
-  console.log('ici')
 })
 
 onMounted(async () => {

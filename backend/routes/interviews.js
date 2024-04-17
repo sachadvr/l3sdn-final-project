@@ -4,7 +4,6 @@ const { getData, saveData } = require('../utils/fileUtils');
 
 const handleError = (res, message, error = {}) => res.status(500).json({ message, error: error.message });
 
-// GET all interviews or filter by manager_id
 router.get('/', async (req, res) => {
   try {
     const data = await getData('interviews');
@@ -16,7 +15,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET interviews by user_id
 router.get('/:userid', async (req, res) => {
   try {
     const data = await getData('interviews');
@@ -27,7 +25,6 @@ router.get('/:userid', async (req, res) => {
   }
 });
 
-// POST a new interview
 router.post('/', async (req, res) => {
   try {
     const data = await getData('interviews');
@@ -37,7 +34,7 @@ router.post('/', async (req, res) => {
     }
 
     let newInterview = {
-      id: data.length + 1, // Consider using UUIDs for better scalability and uniqueness
+      id: data.length + 1,
       date, resume, user_id, manager_id, rating
     };
 
@@ -49,7 +46,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PATCH update an interview
 router.patch('/:id', async (req, res) => {
   try {
     const data = await getData('interviews');
@@ -67,7 +63,6 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// DELETE an interview
 router.delete('/:id', async (req, res) => {
   try {
     const data = await getData('interviews');
