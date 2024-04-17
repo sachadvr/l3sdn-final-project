@@ -43,7 +43,6 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.user = null;
       localStorage.removeItem('token');
-      this.notifyUser('warning', 'Logged out successfully.');
     },
     async verifyToken() {
       try {
