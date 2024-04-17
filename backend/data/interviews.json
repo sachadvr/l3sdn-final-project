@@ -62,5 +62,13 @@
     "user_id": 6,
     "manager_id": 1,
     "rating": 4
+  },
+  {
+    "id": 9,
+    "date": "2024/04/19",
+    "resume": "Mélène aime le chou fleur",
+    "user_id": 6,
+    "manager_id": 1,
+    "rating": 4
   }
 ]
