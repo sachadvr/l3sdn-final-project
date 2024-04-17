@@ -8,7 +8,7 @@
       v-if="icon"
       avatar
     >
-      <q-icon :name="icon" />
+      <q-icon :name="icon"/>
     </q-item-section>
 
     <q-item-section>
@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import { useRouter } from 'vue-router'
+import {defineComponent} from 'vue'
+import {useRouter} from 'vue-router'
 
 export default defineComponent({
   name: 'EssentialLink',

@@ -222,7 +222,7 @@ onMounted(async () => {
     interviewsManager.value = interviews_store.managerInterviews.sort(
       (a, b) => new Date(b.date) - new Date(a.date)
     )
-      console.log(interviewsManager.value)
+    console.log(interviewsManager.value)
   }
 
 })

@@ -116,6 +116,7 @@ const deleteItem = () => {
   margin-top: 2rem;
 
 }
+
 .q-date {
   width: 100%;
   color: black;
@@ -124,6 +125,7 @@ const deleteItem = () => {
 .body--dark .q-date {
   color: white;
 }
+
 .width-fit {
   width: 1200px !important;
 }
