@@ -62,7 +62,14 @@ const editRow = (row) => {
 }
 
 const updateRows = async (id, data) => {
-  user_store.update(id, data)
+  if (user_store.update(id, data)) {
+    $q.notify({
+      type: 'positive',
+      position: 'bottom',
+      message: 'Utilisateur mis à jour avec succès',
+    })
+
+  }
   setTimeout(async () => {
     await fetchRows()
   }, 1000)
