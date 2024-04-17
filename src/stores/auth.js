@@ -58,7 +58,6 @@ export const useAuthStore = defineStore('auth', {
           };
           return true;
         } else if (response.status === 401 || response.status === 403) {
-          // Assume that these statuses mean the token is invalid/expired
           this.logout();
           this.notifyUser('negative', 'Session expired or invalid. Please log in again.');
           return false;
