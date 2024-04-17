@@ -33,7 +33,7 @@
     "role": "ROLE_USER",
     "manager_id": 1,
     "salary": "34000",
-    "darkmode": true
+    "darkmode": false
   },
   {
     "id": 4,
