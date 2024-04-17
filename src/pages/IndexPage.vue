@@ -110,6 +110,8 @@ const objectifStore = useObjectifsStore()
 const interviewStore = useInterviewsStore()
 const router = useRouter()
 
+
+// probleme de parallelisme donc on utilise onMounted plusieurs fois
 onMounted(async () => {
   user.value = await authStore.getCurrentUser()
   if (await userStore.getUserByManager(user.value.id)) {
@@ -123,6 +125,10 @@ onMounted(async () => {
       nextPersonalInterview.value = 'Aucun prochain entretien perso prévu'
     }
   }
+})
+
+onMounted(async () => {
+  user.value = await authStore.getCurrentUser()
   if (await interviewStore.getInterviewByManager(user.value.id)) {
     if (interviewStore.managerInterviews.some((i) => new Date(i.date) > new Date())) {
       nextInterview.value = new Date(interviewStore.managerInterviews[0].date).toLocaleDateString()

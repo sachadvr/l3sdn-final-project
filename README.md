@@ -9,6 +9,8 @@ Les utilisateurs :
 
 (pas besoin de mot de passe)
 
+Il y a quelques soucis de parallélisme donc ne pas faire attention si quelques fois certaines infos disparaissent
+
 ## To start frontend (quasar) & backend nodejs/express
 ```bash
 docker compose up -d
