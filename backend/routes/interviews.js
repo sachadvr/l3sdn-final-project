@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { getData, saveData } = require('../utils/fileUtils');
 
-// Helper function to send error messages
 const handleError = (res, message, error = {}) => res.status(500).json({ message, error: error.message });
 
 // GET all interviews or filter by manager_id

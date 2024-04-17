@@ -27,6 +27,7 @@ router.get('/', async (req, res) => {
 router.get('/:userid', async (req, res) => {
   const { userid } = req.params;
   const { year } = req.query;
+
   try {
     const data = await getData('objectifs');
     const userObjectifs = filterDataByUserAndYear(data, userid, year);
@@ -40,9 +41,11 @@ router.patch('/:id', async (req, res) => {
   try {
     const data = await getData('objectifs');
     const index = data.findIndex(i => i.id == req.params.id);
+
     if (index === -1) {
       return res.status(404).json({ message: `Objectif with id ${req.params.id} not found` });
     }
+
     data[index] = { ...data[index], ...req.body };
     await saveData('objectifs', data);
     res.json(data[index]);
@@ -53,6 +56,7 @@ router.patch('/:id', async (req, res) => {
 
 router.get('/manager/:managerid/:year', async (req, res) => {
   const { managerid, year } = req.params;
+
   try {
     const data = await getData('objectifs');
     const managerObjectifs = data.filter(o => o.manager_id == managerid && o.date.startsWith(year));
@@ -64,10 +68,12 @@ router.get('/manager/:managerid/:year', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const { date, resume, user_id, manager_id } = req.body;
+
   try {
     if (!date || !resume || !user_id || !manager_id) {
       return res.status(400).json({ message: 'Veuillez remplir tous les champs' });
     }
+
     const data = await getData('objectifs');
     let newObjective = { id: data.length + 1, date, resume, user_id, manager_id };
     data.push(newObjective);
@@ -87,6 +93,7 @@ router.delete('/:id', async (req, res) => {
     if (index === -1) {
       return res.status(404).json({ message: `Objectif with id ${req.params.id} not found` });
     }
+
     data.splice(index, 1);
     await saveData('objectifs', data);
     res.json({ message: `Objectif with id ${req.params.id} deleted` });

@@ -38,5 +38,29 @@
     "user_id": 6,
     "manager_id": 1,
     "rating": 4
+  },
+  {
+    "id": 6,
+    "date": "2024/04/18",
+    "resume": "aaaaa",
+    "user_id": 3,
+    "manager_id": 1,
+    "rating": 4
+  },
+  {
+    "id": 7,
+    "date": "2024/04/18",
+    "resume": "aaaaaaaaaaaaaa",
+    "user_id": 6,
+    "manager_id": 1,
+    "rating": 5
+  },
+  {
+    "id": 8,
+    "date": "2024/04/18",
+    "resume": "aaaaaaaaaa",
+    "user_id": 6,
+    "manager_id": 1,
+    "rating": 4
   }
 ]

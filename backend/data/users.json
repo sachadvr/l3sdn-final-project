@@ -5,7 +5,7 @@
     "password": "",
     "role": "ROLE_MANAGER",
     "manager_id": null,
-    "name": "Rodone",
+    "name": "Rodon",
     "firstname": "Romain",
     "job": "Manager",
     "salary": 50000
@@ -75,5 +75,16 @@
     "manager_id": 1,
     "job": "Product Owner",
     "salary": "12000"
+  },
+  {
+    "id": 8,
+    "name": "binks",
+    "firstname": "bdd",
+    "username": "jnf,k;zl",
+    "password": "",
+    "role": "ROLE_USER",
+    "manager_id": 1,
+    "job": "df",
+    "salary": "399999999999"
   }
 ]

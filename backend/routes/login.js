@@ -1,19 +1,19 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const bodyParser = require('body-parser');
 const { getData } = require('../utils/fileUtils');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.use(express.json());
 
-const secretKey = 'ADZHUZAI123';
+const secretKey = process.env.JWT_SECRET_KEY || 'ADZHUZAI123';
 
 router.post('/', async (req, res) => {
   const { username, password } = req.body;
 
   try {
     const data = await getData('users');
+
     const user = data.find(u => u.username === username && u.password === password);
     if (user) {
       const token = jwt.sign(

@@ -8,7 +8,6 @@ const assignNewId = (data) => {
   return data.length > 0 ? Math.max(...data.map(item => item.id)) + 1 : 1;
 };
 
-// Renvoie les utilisateurs avec filtrage optionnel
 router.get('/', async (req, res) => {
   try {
     const { role, manager_id } = req.query;
@@ -39,7 +38,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Renvoie un utilisateur spécifique
 router.get('/:id', async (req, res) => {
   try {
     const data = await getData('users');
@@ -55,7 +53,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Met à jour un utilisateur
 router.patch('/:id', async (req, res) => {
   try {
     const data = await getData('users');
@@ -73,7 +70,6 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// Ajoute un nouvel utilisateur
 router.post('/', async (req, res) => {
   try {
     const data = await getData('users');
@@ -87,7 +83,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Supprime un utilisateur
 router.delete('/:id', async (req, res) => {
   try {
     const data = await getData('users');
