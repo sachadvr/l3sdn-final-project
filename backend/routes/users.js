@@ -73,7 +73,7 @@ router.patch('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const data = await getData('users');
-    const newUser = { id: assignNewId(data), ...req.body };
+    const newUser = { id: assignNewId(data), ...req.body, ...{ darkMode: false } };
     data.push(newUser);
 
     await saveData('users', data);

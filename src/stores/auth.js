@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { useQuasar } from 'quasar';
+import {useQuasar} from 'quasar'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -30,20 +30,20 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('token', token);
         return true;
       } catch (error) {
-        this.notifyUser('negative', 'Login failed. Please check your username and password.');
+        notifyUser('negative', 'Login failed. Please check your username and password.');
         return false;
       }
     },
     logout() {
       this.user = null;
       localStorage.removeItem('token');
-      this.notifyUser('warning', 'Logged out successfully.');
+      notifyUser('warning', 'Logged out successfully.');
     },
     async verifyToken() {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          this.notifyUser('warning', 'No token found. Please log in.');
+          notifyUser('warning', 'No token found. Please log in.');
           return false
         }
         const response = await axios.post('/api/login/verify', {}, {
@@ -60,15 +60,15 @@ export const useAuthStore = defineStore('auth', {
         } else if (response.status === 401 || response.status === 403) {
           // Assume that these statuses mean the token is invalid/expired
           this.logout();
-          this.notifyUser('negative', 'Session expired or invalid. Please log in again.');
+          notifyUser('negative', 'Session expired or invalid. Please log in again.');
           return false;
         } else {
           // Handle other statuses without logging out the user
-          this.notifyUser('negative', 'Unable to verify login. Please try again.');
+          notifyUser('negative', 'Unable to verify login. Please try again.');
           return false;
         }
       } catch (error) {
-        this.notifyUser('negative', 'Token verification failed due to network or server error. Please try again later.');
+        notifyUser('negative', 'Token verification failed due to network or server error. Please try again later.');
         this.logout()
         return false
       }
@@ -79,12 +79,14 @@ export const useAuthStore = defineStore('auth', {
       }
       return this.user;
     },
-    notifyUser(type, message) {
-      const $q = useQuasar();
-      $q.notify({
-        type: type,
-        message: message
-      });
-    }
+
   },
 });
+
+function notifyUser(type, message) {
+
+  useQuasar().notify({
+    type: type,
+    message: message
+  });
+}

@@ -40,7 +40,7 @@
         @click="openObjectif(objectif)"
       >
         <q-card-section>
-          <div v-if="userList && userList.find((u) => u.id == objectif.user_id)" class="text-black center p-5">
+          <div v-if="userList && userList.find((u) => u.id == objectif.user_id)" class="text-primary center p-5">
             {{ userList.find((u) => u.id == objectif.user_id).name }}
             {{ userList.find((u) => u.id == objectif.user_id).firstname }}
           </div>

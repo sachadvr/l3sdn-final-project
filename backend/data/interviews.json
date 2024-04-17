@@ -12,7 +12,7 @@
     "date": "2024/04/16",
     "resume": "RAS, il fait son travail correctement",
     "user_id": 1,
-    "rating": 3,
+    "rating": 5,
     "manager_id": 2
   },
   {
@@ -70,5 +70,21 @@
     "user_id": 6,
     "manager_id": 1,
     "rating": 4
+  },
+  {
+    "id": 10,
+    "date": "2024/04/15",
+    "resume": "DSds",
+    "user_id": 6,
+    "manager_id": 1,
+    "rating": 4
+  },
+  {
+    "id": 11,
+    "date": "2024/04/16",
+    "resume": "sdssdds",
+    "user_id": 6,
+    "manager_id": 1,
+    "rating": 5
   }
 ]

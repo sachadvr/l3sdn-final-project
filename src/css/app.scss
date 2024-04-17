@@ -4,3 +4,15 @@
   box-sizing: border-box;
   font-family: 'Quicksand', sans-serif;
 }
+
+.body--dark .q-tab__label {
+  color: white;
+}
+
+.body--dark .text-primary {
+  color: var(--q-light) !important;
+}
+
+.body--dark .bg-light {
+  background-color: var(--q-dark) !important;
+}

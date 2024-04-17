@@ -13,7 +13,22 @@ module.exports = {
     browser: true,
     'vue/setup-compiler-macros': true
   },
-
+  // /dist
+  // /src-capacitor
+  // /src-cordova
+  // /.quasar
+  // /node_modules
+  // .eslintrc.js
+  // /quasar.config.*.temporary.compiled*
+  ignores: [
+    '/dist/**/*',
+    '/src-capacitor/**/*',
+    '/src-cordova/**/*',
+    '/.quasar/**/*',
+    '/node_modules/**/*',
+    '.eslintrc.js',
+    '/quasar.config.*.temporary.compiled*'
+  ],
   // Rules order is important, please avoid shuffling them
   extends: [
     // Base ESLint recommended rules
@@ -81,7 +96,7 @@ module.exports = {
       }
     ],
     quotes: ['error', 'single', { avoidEscape: true }],
-    //'semi': ['error', 'never'],
+    'semi': ['error', 'never'],
     // allow debugger during development only
     'no-debugger': 'warn',
     'no-console': 'warn'
