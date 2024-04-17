@@ -15,7 +15,6 @@ export const useObjectifsStore = defineStore('objectifs', {
         this.objectifs = response.data
         return true
       } catch (error) {
-        console.error('Failed to fetch objectifs:', error)
         return false
       }
     },
@@ -26,7 +25,6 @@ export const useObjectifsStore = defineStore('objectifs', {
         })
         return response.data
       } catch (error) {
-        console.error('Failed to fetch objectif:', error)
         return null
       }
     },
@@ -37,7 +35,6 @@ export const useObjectifsStore = defineStore('objectifs', {
         })
         return response.data
       } catch (error) {
-        console.error('Failed to fetch objectifs:', error)
         return null
       }
     },
@@ -48,7 +45,6 @@ export const useObjectifsStore = defineStore('objectifs', {
         })
         return true
       } catch (error) {
-        console.error('Failed to patch objectif:', error)
         return false
       }
     },
@@ -60,7 +56,7 @@ export const useObjectifsStore = defineStore('objectifs', {
         })
         return true
       } catch (error) {
-        console.error('Failed to post objectif:', error)
+        this.notifyUser('negative', 'Impossible d\'ajouter un objectif. Un des arguments est manquant.');
         return false
       }
     },
@@ -71,7 +67,6 @@ export const useObjectifsStore = defineStore('objectifs', {
         })
         return true
       } catch (error) {
-        console.error('Failed to delete objectif:', error)
         return false
       }
     }

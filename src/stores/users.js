@@ -98,6 +98,17 @@ export const useUserStore = defineStore('users', {
         console.error('Failed to delete user:', error)
         return false
       }
+    },
+    async updateUser(id, data) {
+      try {
+        const response = await axios.patch(`/api/users/${id}`, data, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Failed to update user:', error)
+        return false
+      }
     }
   }
 })

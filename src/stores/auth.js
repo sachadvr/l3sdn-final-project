@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { useQuasar } from 'quasar';
+import { useQuasar } from 'quasar'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -62,8 +62,7 @@ export const useAuthStore = defineStore('auth', {
           this.notifyUser('negative', 'Session expired or invalid. Please log in again.');
           return false;
         } else {
-          // Handle other statuses without logging out the user
-          this.notifyUser('negative', 'Unable to verify login. Please try again.');
+          this.this.notifyUser('negative', 'Unable to verify login. Please try again.');
           return false;
         }
       } catch (error) {
@@ -79,11 +78,14 @@ export const useAuthStore = defineStore('auth', {
       return this.user;
     },
     notifyUser(type, message) {
-      const $q = useQuasar();
-      $q.notify({
+
+      useQuasar().notify({
         type: type,
         message: message
       });
     }
+
   },
 });
+
+

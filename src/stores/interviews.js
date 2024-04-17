@@ -20,7 +20,6 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false;
         return true;
       } catch (error) {
-        console.error('Failed to fetch interviews:', error);
         this.error = error.message;
         this.isLoading = false;
         return false;
@@ -37,7 +36,6 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false;
         return true;
       } catch (error) {
-        console.error('Failed to fetch interviews by manager:', error);
         this.error = error.message;
         this.isLoading = false;
         return false;
@@ -54,7 +52,6 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false;
         return true;
       } catch (error) {
-        console.error('Failed to fetch manager interviews:', error);
         this.error = error.message;
         this.isLoading = false;
         return false;
@@ -70,7 +67,6 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false;
         return response.data;
       } catch (error) {
-        console.error('Failed to patch interview:', error);
         this.error = error.message;
         this.isLoading = false;
         return false;
@@ -87,7 +83,7 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false;
         return response.data;
       } catch (error) {
-        console.error('Failed to post interview:', error);
+        this.notifyUser('negative', 'Impossible d\'ajouter un entretien. Un des arguments est manquant.');
         this.error = error.message;
         this.isLoading = false;
         return false;
@@ -103,7 +99,6 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false;
         return response.data;
       } catch (error) {
-        console.error('Failed to delete interview:', error);
         this.error = error.message;
         this.isLoading = false;
         return false;

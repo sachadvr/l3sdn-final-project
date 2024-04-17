@@ -22,10 +22,20 @@
 
         <q-btn
           icon="refresh"
-          flat round dense
           class="q-mr-sm ml-5"
+          flat round dense
           @click="router.go()"
         />
+
+          <q-checkbox
+            v-if="user"
+            v-model="darkmode"
+            checked-icon="light_mode"
+            unchecked-icon="dark_mode"
+            dark
+            color="red"
+            class="ml-5"
+          />
         <q-toolbar-title v-if="!user">RH Manager</q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -42,14 +52,27 @@ import { useRoute, useRouter } from 'vue-router';
 import routes from 'src/router/routes'
 import { onMounted, watch } from 'vue'
 import { useAuthStore } from 'stores/auth'
+import { useQuasar } from 'quasar'
+import {useUserStore} from 'stores/users'
 
 const route = useRoute();
 const router = useRouter();
-const leftDrawerOpen = ref(false)
+const $q = useQuasar()
 
+const user_store = useUserStore()
+
+const darkmode = ref(false)
 let user = ref(null);
 onMounted(async () => {
   user.value = await useAuthStore().getCurrentUser()
+  if (user.value && user.value.darkmode) {
+    darkmode.value = user.value.darkmode
+    return;
+  }
+  if (user.value && await user_store.getUser(user.value.id)) {
+    darkmode.value = user_store.currentuser.darkmode
+  }
+
 })
 
 const getRoleFromRoute = (route) => {
@@ -76,16 +99,32 @@ watch(
   () => route.fullPath,
   async () => {
     user.value = await useAuthStore().getCurrentUser()
+    if (user.value && user.value.darkmode) {
+      darkmode.value = user.value.darkmode
+      return;
+    }
+    if (user.value && await user_store.getUser(user.value.id)) {
+      darkmode.value = user_store.currentuser.darkmode
+    }
+
   }
 );
 
+watch(
+  () => darkmode.value,
+  () => {
+    $q.dark.set(darkmode.value)
+
+    useUserStore().updateUser(user.value.id, { darkmode: darkmode.value })
+  }
+)
 
 const onItemClick = (link) => {
   router.push(link.link)
 }
 
-const toggleLeftDrawer = () => {
-  leftDrawerOpen.value = !leftDrawerOpen.value
+const toggleDarkMode = () => {
+  $q.dark.toggle()
 }
 </script>
 

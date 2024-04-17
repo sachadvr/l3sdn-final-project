@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
-    <q-card class="bg-white text-white width-fit" style="width: 300px">
+    <q-card class="bg-light text-primary width-fit" style="width: 300px">
       <q-form @submit="submit">
         <q-card-section>
           <div v-for="(key, value) in Object.keys(form).filter((i,v) => i !== 'id')" :key="value">
@@ -8,6 +8,7 @@
               v-if="key === 'user_id'"
               v-model="form[key]"
               :label="key"
+
               :options="list_of_users"
               option-label="name"
               option-value="id"
@@ -30,6 +31,7 @@
               v-else-if="key === 'rating'"
               v-model="form[key]"
               size="2em"
+              class="mt-1"
               :max="5"
               color="primary"
             />
@@ -42,7 +44,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn label="Annuler" color="secondary" flat @click="cancel"/>
-          <q-btn v-if="deleteMode" label="Supprimer" color="red" flat @click="deleteItem"/>
+          <q-btn v-if="deleteMode" label="Supprimer" color="negative" flat @click="deleteItem"/>
           <q-btn label="Sauvegarder" color="primary" text @click="submit"/>
         </q-card-actions>
       </q-form>
@@ -110,11 +112,18 @@ const deleteItem = () => {
 
 
 <style>
+.mt-1 {
+  margin-top: 2rem;
+
+}
 .q-date {
-  color: black;
   width: 100%;
+  color: black;
 }
 
+.body--dark .q-date {
+  color: white;
+}
 .width-fit {
   width: 1200px !important;
 }

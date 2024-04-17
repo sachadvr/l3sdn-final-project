@@ -5,10 +5,11 @@
     "password": "",
     "role": "ROLE_MANAGER",
     "manager_id": null,
-    "name": "Rodonne",
+    "name": "Roddone",
     "firstname": "Romain",
     "job": "Manager",
-    "salary": 50000
+    "salary": 50000,
+    "darkmode": true
   },
   {
     "id": 2,
@@ -19,7 +20,8 @@
     "name": "Evrard",
     "firstname": "Charlotte",
     "job": "RH",
-    "salary": 51000
+    "salary": 51000,
+    "darkmode": true
   },
   {
     "id": 3,
@@ -30,7 +32,8 @@
     "job": "Développeur Fullstack",
     "role": "ROLE_USER",
     "manager_id": 1,
-    "salary": "35000"
+    "salary": "34000",
+    "darkmode": true
   },
   {
     "id": 4,
@@ -41,7 +44,8 @@
     "job": "Développeur Fullstack",
     "role": "ROLE_USER",
     "manager_id": 1,
-    "salary": 30000
+    "salary": 30000,
+    "darkmode": true
   },
   {
     "id": 5,
@@ -52,7 +56,8 @@
     "job": "Devops",
     "role": "ROLE_USER",
     "manager_id": 4,
-    "salary": "35000"
+    "salary": "35000",
+    "darkmode": false
   },
   {
     "id": 6,
@@ -74,6 +79,19 @@
     "role": "ROLE_USER",
     "manager_id": 1,
     "job": "Product Owner",
-    "salary": "12000"
+    "salary": "18000",
+    "darkmode": true
+  },
+  {
+    "id": 8,
+    "name": "TOTO",
+    "firstname": "toto",
+    "username": "toto",
+    "password": "",
+    "role": "ROLE_USER",
+    "manager_id": 1,
+    "job": "Aucun",
+    "salary": "12000",
+    "darkMode": false
   }
 ]
