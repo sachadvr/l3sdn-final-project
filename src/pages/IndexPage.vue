@@ -16,6 +16,11 @@
           color="primary"
           @click="$router.push('/logout')"
         />
+        <q-btn
+          label="Mon profil"
+          color="secondary"
+          @click="$router.push('/profile')"
+        />
       </q-card-actions>
     </q-card>
     <q-page-container class="dashboard-grid">
@@ -112,10 +117,20 @@ onMounted(async () => {
   }
 
   if (await interviewStore.fetchInterviews(user.value.id)) {
-    nextPersonalInterview.value = interviewStore.interviews && interviewStore.interviews[0] ? new Date(interviewStore.interviews[0].date).toLocaleDateString() : 'Aucun entretiens perso prévu';
+    // if there is any interviews that are > today
+    if (interviewStore.interviews.some((i) => new Date(i.date) > new Date())) {
+      nextPersonalInterview.value = interviewStore.interviews.find((i) => new Date(i.date) > new Date()).date;
+    } else {
+      nextPersonalInterview.value = 'Aucun prochain entretien perso prévu';
+    }
   }
   if (await interviewStore.getInterviewByManager(user.value.id)) {
-    nextInterview.value = interviewStore.manager_interviews && interviewStore.manager_interviews[0] ? new Date(interviewStore.manager_interviews[0].date).toLocaleDateString() : 'Aucun entretien prévu';
+    // if there is any interviews that are > today
+    if (interviewStore.managerInterviews.some((i) => new Date(i.date) > new Date())) {
+      nextInterview.value = new Date(interviewStore.managerInterviews[0].date).toLocaleDateString();
+    } else {
+      nextInterview.value = 'Aucun entretien prévu';
+    }
   }
   if (await userStore.getUsers())  {
   let hasManager = userStore.users.find((u) => u.id === user.value.id)?.manager_id;
@@ -139,5 +154,9 @@ onMounted(async () => {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 32px;
+}
+
+.q-card {
+  border-radius: 12px ;
 }
 </style>

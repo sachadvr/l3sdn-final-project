@@ -9,11 +9,14 @@ router.get('/', async (req, res) => {
     try {
         const data = await getData('interviews');
         if (req.query.manager_id) {
-            const filteredData = data.filter(i => i.manager_id === req.query.manager_id);
+            const filteredData = data.filter(i => {
+              return i.manager_id === parseInt(req.query.manager_id)
+            });
             res.json(filteredData);
-        } else {
-            res.json(data);
+            return;
         }
+            res.json(data);
+
     } catch (error) {
         res.status(500).json({ message: 'Échec de la récupération des entretiens', error: error.toString() });
     }
@@ -24,11 +27,7 @@ router.get('/:userid', async (req, res) => {
     try {
         const data = await getData('interviews');
         const userInterviews = data.filter(i => i.user_id == req.params.userid);
-        if (userInterviews.length > 0) {
-            res.json(userInterviews);
-        } else {
-            res.status(404).json({ message: 'Aucun entretien trouvé pour cet utilisateur' });
-        }
+        res.json(userInterviews);
     } catch (error) {
         res.status(500).json({ message: 'Échec de la récupération des entretiens', error: error.toString() });
     }
@@ -39,18 +38,14 @@ router.get('/:userid', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const data = await getData('interviews');
-        const { date, resume } = req.body;
-        const user_id = req.user.id; // Récupérer l'ID de l'utilisateur à partir des informations d'authentification
-        const manager_id = req.user.manager_id; // Récupérer l'ID du manager de l'utilisateur à partir des informations d'authentification
-        const created_at = new Date().toISOString(); // Obtenir la date de création au format ISO
+        const { date, resume, user_id, manager_id } = req.body;
 
-        const newInterview = {
-            id: data.length + 1,
-            user_id,
-            date,
-            resume,
-            created_at,
-            manager_id
+        let newInterview = {
+          id: data.length + 1,
+          date,
+          resume,
+          user_id,
+          manager_id
         };
 
         data.push(newInterview);
@@ -59,6 +54,29 @@ router.post('/', async (req, res) => {
             res.status(201).json(newInterview);
         } else {
             res.status(500).json({ message: 'Failed to save new interview' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to process request', error: error.message });
+    }
+});
+
+router.patch('/:id', async (req, res) => {
+    try {
+        const data = await getData('interviews');
+        const interviewIndex = data.findIndex(i => i.id == req.params.id);
+
+        if (interviewIndex === -1) {
+            return res.status(404).json({ message: 'Entretien non trouvé' });
+        }
+
+        const existingInterview = data[interviewIndex];
+        const updatedInterview = { ...existingInterview, ...req.body };
+        data[interviewIndex] = updatedInterview;
+
+        if (await saveData('interviews', data)) {
+            res.json(updatedInterview);
+        } else {
+            res.status(500).json({ message: 'Failed to save interview' });
         }
     } catch (error) {
         res.status(500).json({ message: 'Failed to process request', error: error.message });

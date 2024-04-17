@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getData } = require('../utils/fileUtils');
+const { getData,saveData } = require('../utils/fileUtils');
 
-// GET all objectives or filter by user_id and year
+
 router.get('/', async (req, res) => {
   try {
     const data = await getData('objectifs', res);
@@ -20,7 +20,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET objectives by userid, with optional year filter
 router.get('/:userid', async (req, res) => {
   try {
     const data = await getData('objectifs', res);
@@ -32,6 +31,20 @@ router.get('/:userid', async (req, res) => {
   } catch (error) {
     res.status(404).json({ message: 'Objectives not found for this user', error: error.message });
   }
+});
+
+router.patch('/:id', async (req, res) => {
+  const data = await getData('objectifs', res);
+
+    const index = data.findIndex(i => i.id == req.params.id);
+    if (index === -1) {
+        res.status(404).json({ message: `Objectif with id ${req.params.id} not found` });
+        return;
+    }
+
+    data[index] = { ...data[index], ...req.body };
+    saveData('objectifs', data, res);
+    res.json(data[index]);
 });
 
 module.exports = router;

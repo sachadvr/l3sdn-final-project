@@ -1,26 +1,23 @@
 [
   {
     "id": 1,
+    "date": "2023-12-12",
+    "resume": "Théo est un élément prometteur, il mérite une augmentation",
+    "user_id": 3,
+    "manager_id": 1
+  },
+  {
+    "id": 2,
+    "date": "2023-12-12",
+    "resume": "RAS, il fait son travail correctement",
     "user_id": 1,
-    "date": "2019-01-01",
-    "resume": "I am a software engineer, I have been working for 5 years",
-    "created_at": "2019-01-01 00:00:00",
     "manager_id": 2
   },
   {
-    "user_id": 1,
-    "manager_id": "d",
-    "date": "dd",
-    "resume": "dd",
-    "created_at": "2024-04-16T13:22:11.981Z",
-    "id": 2
-  },
-  {
-    "user_id": 1,
-    "manager_id": 1,
-    "date": "ddd",
-    "resume": "ddd",
-    "created_at": "2024-04-16T13:23:39.678Z",
-    "id": 3
+    "id": 3,
+    "date": "2023-12-12",
+    "resume": "Il est très bien, pas de soucis",
+    "user_id": 4,
+    "manager_id": 1
   }
 ]

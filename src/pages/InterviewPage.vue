@@ -15,20 +15,40 @@
       <q-separator />
       <q-tab-panels v-model="tab">
         <q-tab-panel name="interview">
-          <div class="text-h6">Le récap de mes interviews</div>
-          <q-card v-for="interview in interviews" :key="interview.id">
+          <div class="flex">
+            <q-page-container>
+              <div class="text-h6">Le récap de mes interviews</div>
+
+              <q-card v-for="interview in interviewsPerso" :key="interview.id" class="mx-2 cursor-pointer" @click="openInterview(interview)" >
             <q-card-section>
-              <div class="text-h6">Interview du {{ interview.date }}</div>
+              <div class="text-h6 w-fit" v-bind:class="isOutOfDate(interview.date) ? 'bg-negative' : 'bg-primary'" >Interview du {{ interview.date }}</div>
               <div class="text-subtitle2">Résumé</div>
               <div>{{ interview.resume }}</div>
             </q-card-section>
           </q-card>
-          <q-btn
-            color="primary"
-            label="Ajouter un nouvel entretien"
-            class="q-mt-md"
-            @click="addInterview"
-          />
+
+            </q-page-container>
+            <q-page-container v-if="user && user.roles.some(r => r === 'ROLE_ADMIN' || r === 'ROLE_MANAGER')">
+              <div class="text-h6">Interview de l'équipe</div>
+
+              <q-card v-for="interview in interviewsManager" :key="interview.id" class="mx-2 cursor-pointer" @click="openInterview(interview)">
+            <q-card-section>
+              <div class="text-black center p-5">{{ userList.find(u => u.id === interview.user_id).firstname }} {{ userList.find(u => u.id === interview.user_id).name }}</div>
+              <div class="text-h6 w-fit" v-bind:class="isOutOfDate(interview.date) ? 'bg-negative' : 'bg-primary'">Interview du {{ interview.date }}</div>
+              <div class="text-subtitle2">Résumé</div>
+              <div>{{ interview.resume }}</div>
+            </q-card-section>
+          </q-card>
+              <q-btn
+                v-if="user && user.roles.some(r => r === 'ROLE_ADMIN' || r === 'ROLE_MANAGER')"
+                color="primary"
+                label="Ajouter un nouvel entretien"
+                class="q-mt-md"
+                @click="openPostPopup()"
+              />
+            </q-page-container>
+          </div>
+
         </q-tab-panel>
         <q-tab-panel name="obj">
           <div class="text-h6">Mes objectifs de cette année</div>
@@ -40,6 +60,8 @@
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
+    <PopupManager v-if="editShowPopup" :editedRow="editedObj" :selectedKeys="['id','resume','date']" @update="updateRows" />
+    <PopupManager v-if="postShowPopup" :editedRow="postObj" :selectedKeys="['resume','date', 'user_id']" @update="postRows" />
   </div>
 </template>
 
@@ -48,23 +70,70 @@ import { ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth';
 import { useInterviewsStore } from 'src/stores/interviews';
 import { useObjectifsStore } from 'src/stores/objectifs';
+import { useUserStore } from 'src/stores/users';
 import { onMounted } from 'vue';
+import { useQuasar } from 'quasar';
+const $q = useQuasar();
 import axios from 'axios';
 import ObjectifPage from 'pages/ObjectifPage.vue';
+import PopupManager from 'components/PopupManager.vue'
 const user = ref(null);
-const interviews = ref([]);
+const interviewsPerso = ref([]);
+const interviewsManager = ref([]);
 const objectifs = ref([]);
-
 const objectifsNextYear = ref([]);
+
+const editShowPopup = ref(false);
+const editedObj = ref(null);
+
+const postShowPopup = ref(false);
+const postObj = ref(null);
+
+const updateRows = async (id, data) => {
+  editShowPopup.value = false;
+
+  if (await interviews_store.patchInterview(data)) {
+     $q.notify({
+      color: 'positive',
+      position: 'bottom',
+      message: 'Entretien mis à jour avec succès',
+    });
+  }
+};
+
+const postRows = async (id, data) => {
+  postShowPopup.value = false;
+
+  if (data.user_id) {
+    console.log(data.user_id)
+    data.user_id = parseInt(data.user_id.id);
+  }
+  if (await interviews_store.postInterview(data, user.value.id)) {
+     $q.notify({
+      color: 'positive',
+      position: 'bottom',
+      message: 'Entretien ajouté avec succès',
+    });
+  }
+};
 
 const tab = ref('interview');
 const auth_store = useAuthStore();
 const interviews_store = useInterviewsStore();
 const objectif_store = useObjectifsStore();
+const user_store = useUserStore();
+let userList = [];
 onMounted(async () => {
+  if (await user_store.getUsers()) {
+    userList = user_store.users;
+  }
   user.value = await auth_store.getCurrentUser();
   if (await interviews_store.fetchInterviews(user.value.id)) {
-    interviews.value = interviews_store.interviews;
+    interviewsPerso.value = interviews_store.interviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+  }
+
+  if (await interviews_store.fetchManagerInterviews(user.value.id)) {
+    interviewsManager.value = interviews_store.managerInterviews.sort((a, b) => new Date(b.date) - new Date(a.date));
   }
 
   if (
@@ -83,43 +152,48 @@ onMounted(async () => {
   }
 });
 
-const addInterview = async () => {
-  const date = prompt("Date de l'entretien (format: YYYY-MM-DD):");
-  const resume = prompt("Résumé de l'entretien:");
-  const created_at = new Date().toISOString();
-  if (date && resume) {
-    try {
-      let managerId = null;
-      // Si l'utilisateur est un admin ou un manager, demandez le manager_id
-      if (user.value.roles[0] === 'ROLE_ADMIN' || user.value.roles[0] === 'ROLE_MANAGER') {
-        managerId = prompt("ID du manager avec qui vous avez l'entretien:");
-      } else {
-        // Sinon, utilisez automatiquement le manager de l'utilisateur courant
-        managerId = user.value.manager_id;
-      }
-      managerId = parseInt(managerId);
-      const response = await axios.post(
-        '/api/interviews',
-        {
-          user_id: user.value.id,
-          manager_id: managerId,
-          date,
-          resume,
-          created_at,
 
-        },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-      );
-      if (response.status === 201) {
-        interviews.value = await interviews_store.fetchInterviews(user.value.id);
-        console.log('Entretien ajouté avec succès');
-      }
-    } catch (error) {
-      console.error("Erreur lors de l'ajout de l'entretien:", error);
-    }
+const isOutOfDate = (date) => {
+  return new Date(date) < new Date();
+};
+
+const openInterview = (interview) => {
+  editedObj.value = interview;
+  editShowPopup.value = true;
+};
+const openPostPopup = () => {
+  postObj.value = {
+    resume: '',
+    date: '',
+    user_id: ''
   }
+  postShowPopup.value = true;
 };
 </script>
 
+<style>
+.q-card {
+  border-radius: 12px;
+}
+.mx-2 {
+  margin-top: 10px;
+}
+.w-fit {
+  width: fit-content;
+  color:white;
+  padding: 0 1rem;
+}
+.flex {
+  display: flex;
+  gap: 2rem;
+}
+.center {
+  text-align: center;
+}
+.q-page-container {
+  flex: 1;
+}
+.bg-primary, .bg-negative {
+  border-radius: 12px;
+}
+</style>

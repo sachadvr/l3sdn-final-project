@@ -12,18 +12,14 @@
       </template>
     </q-input>
     <q-table
-      :rows="rows"
+      :rows="rows.map((r) => ({id: r.id, name: r.name, firstname: r.firstname }))"
       row-key="nom"
       flat bordered
       :filter="filter"
       @row-click="onRowClick"
     >
     </q-table>
-      <EditForm v-if="show" :editedRow="editedRow" @update="updateRows()" @edit="(data) => {
-        const index = rows.findIndex((r) => r.id === data.id);
-        rows[index] = data;
-
-      }"/>
+      <EditForm v-if="show" :editedRow="editedRow" :selected-keys="['id','name','firstname','job']" @update="updateRows"/>
 </template>
 
 <script setup>
@@ -56,7 +52,8 @@ const editRow = (row) => {
   show.value = true;
 };
 
-const updateRows = async () => {
+const updateRows = async (id, data) => {
+  user_store.update(id, data)
   setTimeout(async () => {
     await fetchRows();
   }, 1000);

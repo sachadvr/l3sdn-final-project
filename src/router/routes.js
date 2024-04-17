@@ -35,6 +35,14 @@ const routes = [
 
   },
   {
+    path: '/profile',
+    component: () => import('layouts/MainLayout.vue'),
+    meta: { requiresRole: ['ROLE_USER','ROLE_ADMIN', 'ROLE_RH'] },
+    children: [
+      { path: '', component: () => import('pages/ProfilePage.vue') }
+    ]
+  },
+  {
     path: '/logout',
     component: () => import('layouts/MainLayout.vue'),
     children: [

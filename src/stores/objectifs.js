@@ -18,6 +18,28 @@ export const useObjectifsStore = defineStore('objectifs', {
         console.error('Failed to fetch objectifs:', error)
         return false
       }
+    },
+    async fetchObjectif(objectifId) {
+      try {
+        const response = await axios.get(`/api/objectives/${objectifId}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Failed to fetch objectif:', error)
+        return null
+      }
+    },
+    async patchObjectif(objectif) {
+      try {
+        await axios.patch(`/api/objectives/${objectif.id}`, objectif, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return true
+      } catch (error) {
+        console.error('Failed to patch objectif:', error)
+        return false
+      }
     }
   }
 })
