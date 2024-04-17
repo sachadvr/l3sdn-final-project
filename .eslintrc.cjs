@@ -20,15 +20,6 @@ module.exports = {
   // /node_modules
   // .eslintrc.js
   // /quasar.config.*.temporary.compiled*
-  ignores: [
-    '/dist/**/*',
-    '/src-capacitor/**/*',
-    '/src-cordova/**/*',
-    '/.quasar/**/*',
-    '/node_modules/**/*',
-    '.eslintrc.js',
-    '/quasar.config.*.temporary.compiled*'
-  ],
   // Rules order is important, please avoid shuffling them
   extends: [
     // Base ESLint recommended rules

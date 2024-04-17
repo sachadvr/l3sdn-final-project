@@ -81,17 +81,5 @@
     "job": "Product Owner",
     "salary": "18000",
     "darkmode": true
-  },
-  {
-    "id": 8,
-    "name": "TOTO",
-    "firstname": "toto",
-    "username": "toto",
-    "password": "",
-    "role": "ROLE_USER",
-    "manager_id": 1,
-    "job": "Aucun",
-    "salary": "12000",
-    "darkMode": false
   }
 ]

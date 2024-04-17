@@ -73,6 +73,11 @@ router.patch('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const data = await getData('users');
+
+    if (!req.body.username || !req.body.password || !req.body.role) {
+      return res.status(400).json({ message: 'Veuillez remplir tous les champs' });
+    }
+
     const newUser = { id: assignNewId(data), ...req.body, ...{ darkMode: false } };
     data.push(newUser);
 

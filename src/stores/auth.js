@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     notifyUser(message, type) {
       const instance = getCurrentInstance();
-      if (instance) {
+      if (instance && instance.appContext.config.globalProperties.$notify) {
         instance.appContext.config.globalProperties.$notify(message, type);
       }
     },

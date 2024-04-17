@@ -18,6 +18,8 @@ const $q = useQuasar()
 
 onMounted(() => {
   useAuthStore().logout()
+  useAuthStore().notifyUser('Logged out')
+
   router.push('/login')
 })
 </script>
