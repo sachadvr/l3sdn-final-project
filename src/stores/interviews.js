@@ -1,5 +1,6 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 import axios from 'axios'
+import { getCurrentInstance } from 'vue'
 
 export const useInterviewsStore = defineStore('interviews', {
   state: () => ({
@@ -9,12 +10,18 @@ export const useInterviewsStore = defineStore('interviews', {
     error: null
   }),
   actions: {
+    notifyUser(message, type) {
+      const instance = getCurrentInstance()
+      if (instance && instance.appContext.config.globalProperties.$notify) {
+        instance.appContext.config.globalProperties.$notify(message, type)
+      }
+    },
     async fetchInterviews(userid) {
       this.isLoading = true
       this.error = null
       try {
         const response = await axios.get(`/api/interviews/${userid}`, {
-          headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         this.interviews = response.data
         this.isLoading = false
@@ -30,7 +37,7 @@ export const useInterviewsStore = defineStore('interviews', {
       this.error = null
       try {
         const response = await axios.get(`/api/interviews?manager_id=${managerId}`, {
-          headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         this.managerInterviews = response.data
         this.isLoading = false
@@ -46,7 +53,7 @@ export const useInterviewsStore = defineStore('interviews', {
       this.error = null
       try {
         const response = await axios.get(`/api/interviews?manager_id=${managerID}`, {
-          headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         this.managerInterviews = response.data
         this.isLoading = false
@@ -62,7 +69,7 @@ export const useInterviewsStore = defineStore('interviews', {
       this.error = null
       try {
         const response = await axios.patch(`/api/interviews/${interview.id}`, interview, {
-          headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         this.isLoading = false
         return response.data
@@ -78,7 +85,7 @@ export const useInterviewsStore = defineStore('interviews', {
       try {
         data.manager_id = managerID
         const response = await axios.post('/api/interviews', data, {
-          headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         this.isLoading = false
         return response.data
@@ -94,7 +101,7 @@ export const useInterviewsStore = defineStore('interviews', {
       this.error = null
       try {
         const response = await axios.delete(`/api/interviews/${interviewID}`, {
-          headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         this.isLoading = false
         return response.data
