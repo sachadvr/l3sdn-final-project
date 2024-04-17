@@ -2,6 +2,13 @@
 
 A Quasar Project
 
+Les utilisateurs :
+- Romain -> manager
+- charlotte -> RH
+- sacha/theo/melene -> employés
+
+(pas besoin de mot de passe)
+
 ## To start frontend (quasar) & backend nodejs/express
 ```bash
 docker compose up -d
