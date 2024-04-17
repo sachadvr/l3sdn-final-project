@@ -3,7 +3,7 @@
     "id": 1,
     "username": "Romain",
     "password": "",
-    "role": "ROLE_ADMIN",
+    "role": "ROLE_MANAGER",
     "manager_id": null,
     "name": "Rodone",
     "firstname": "Romain",

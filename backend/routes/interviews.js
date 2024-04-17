@@ -38,14 +38,18 @@ router.get('/:userid', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const data = await getData('interviews');
-        const { date, resume, user_id, manager_id } = req.body;
+        const { date, resume, user_id, manager_id, rating } = req.body;
 
+        if (!date || !resume || !user_id || !manager_id || !rating) {
+            return res.status(400).json({ message: 'Veuillez remplir tous les champs' });
+        }
         let newInterview = {
           id: data.length + 1,
           date,
           resume,
           user_id,
-          manager_id
+          manager_id,
+          rating
         };
 
         data.push(newInterview);

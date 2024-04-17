@@ -72,7 +72,7 @@
           </q-card-subtitle>
         </q-card-section>
       </q-card>
-      <q-card v-if="user && user.roles.some(r => r === 'ROLE_ADMIN' || r === 'ROLE_RH')">
+      <q-card v-if="user && user.roles.some(r => r === 'ROLE_MANAGER' || r === 'ROLE_RH')">
         <q-card-section>
           <q-card-title>
             Liste des managés

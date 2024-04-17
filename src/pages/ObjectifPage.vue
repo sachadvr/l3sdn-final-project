@@ -1,12 +1,12 @@
 <template>
   <div class="flex">
-    <q-page-container>
+    <q-page-container v-if="user">
       <div class="text-h6">Le récap de mes objectifs</div>
 
       <q-card
         v-for="objectif in objectifsPerso"
         :key="objectif.id"
-        class="mx-2 cursor-pointer"
+        class="mx-2" :class="{'cursor-pointer': user.roles.some(r => r === 'ROLE_MANAGER')}"
         @click="openObjectif(objectif)"
       >
         <q-card-section>
@@ -26,7 +26,7 @@
     <q-page-container
       v-if="
         user &&
-        user.roles.some((r) => r === 'ROLE_ADMIN' || r === 'ROLE_MANAGER')
+        user.roles.some((r) => r === 'ROLE_MANAGER')
       "
     >
       <div class="text-h6">Objectif de l'équipe</div>
@@ -34,13 +34,13 @@
       <q-card
         v-for="objectif in objectifsManager"
         :key="objectif.id"
-        class="mx-2 cursor-pointer"
+        class="mx-2" :class="{'cursor-pointer': user.roles.some(r => r === 'ROLE_MANAGER')}"
         @click="openObjectif(objectif)"
       >
         <q-card-section>
-          <div class="text-black center p-5">
-            {{ userList.find((u) => u.id === objectif.user_id).firstname }}
-            {{ userList.find((u) => u.id === objectif.user_id).name }}
+          <div v-if="userList && userList.find((u) => u.id == objectif.user_id)" class="text-black center p-5" >
+            {{userList.find((u) => u.id == objectif.user_id).name}}
+            {{userList.find((u) => u.id == objectif.user_id).firstname}}
           </div>
           <div
             class="text-h6 w-fit"
@@ -57,7 +57,7 @@
       <q-btn
         v-if="
           user &&
-          user.roles.some((r) => r === 'ROLE_ADMIN' || r === 'ROLE_MANAGER')
+          user.roles.some((r) => r === 'ROLE_MANAGER')
         "
         color="primary"
         label="Ajouter un nouvel entretien"
@@ -81,45 +81,62 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useAuthStore } from "src/stores/auth";
-import { useObjectifsStore } from "src/stores/objectifs";
-import { onMounted } from "vue";
-import { defineProps } from "vue";
-import ObjectifForm from "components/ObjectifForm.vue";
-import EditForm from "components/PopupManager.vue";
+import { ref } from 'vue';
+import { useAuthStore } from 'src/stores/auth';
+import { useObjectifsStore } from 'src/stores/objectifs';
+import { onMounted } from 'vue';
+import { defineProps } from 'vue';
+import { useQuasar } from 'quasar';
+import { useUserStore } from 'src/stores/users'
+import PopupManager from 'components/PopupManager.vue'
 
 const user = ref(null);
-const tab = ref("objectif");
+const editShowPopup = ref(false);
+const postShowPopup = ref(false);
+
+const $q = useQuasar();
 const auth_store = useAuthStore();
+const user_store = useUserStore();
 const objectif_store = useObjectifsStore();
-const showPopup = ref(false);
+
+
 const props = defineProps({
   objectifs: Array,
-  objectifsManager: Array,
+  objectifManager: Array,
 });
 const objectifsPerso = ref(props.objectifs);
+const objectifsManager = ref(props.objectifManager);
+
 const editedObj = ref(null);
-
-const addObjectif = async () => {
-  const date = prompt("Date de l'objectif (format: YYYY-MM-DD) :");
-  const resume = prompt("Description de l'objectif :");
-
-  if (date && resume) {
-    console.log("toto");
+const postObj = ref(null);
+const userList = ref([]);
+onMounted(async () => {
+  user.value = await auth_store.getCurrentUser();
+  if (await user_store.getUserByManager(user.value.id)) {
+    userList.value = user_store.userByManager;
   }
-};
-const editObjectif = async (objectif) => {
-  editedObj.value = objectif;
-  showPopup.value = true;
-};
+});
 const updateRows = async (id, data) => {
   if (objectif_store.patchObjectif(data)) {
-    setTimeout(async () => {
-      await fetchRows();
-    }, 1000);
+    $q.notify({
+      color: 'positive',
+      position: 'bottom',
+      message: 'Objectif modifié avec succès',
+    });
   }
-  showPopup.value = false;
+  editShowPopup.value = false;
+};
+
+const postRows = async (id, data) => {
+  data.user_id = parseInt(data.user_id.id);
+  if (objectif_store.postObjectif(data, user.value.id)) {
+    $q.notify({
+      color: 'positive',
+      position: 'bottom',
+      message: 'Objectif ajouté avec succès',
+    });
+  }
+  postShowPopup.value = false;
 };
 
 const isOutOfDate = (date) => {
@@ -127,14 +144,16 @@ const isOutOfDate = (date) => {
 };
 
 const openObjectif = (interview) => {
-  editedObj.value = interview;
-  editShowPopup.value = true;
+  if (user.value.roles.some((r) => r === 'ROLE_MANAGER')) {
+    editedObj.value = interview;
+    editShowPopup.value = true;
+  }
 };
 const openPostPopup = () => {
   postObj.value = {
-    resume: "",
-    date: "",
-    user_id: "",
+    resume: '',
+    date: '',
+    user_id: '',
   };
   postShowPopup.value = true;
 };

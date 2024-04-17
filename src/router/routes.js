@@ -4,7 +4,7 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    meta: { requiresRole: ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_RH'] },
+    meta: { requiresRole: ['ROLE_USER', 'ROLE_MANAGER', 'ROLE_RH'] },
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') }
     ]
@@ -20,7 +20,7 @@ const routes = [
   {
     path: '/manage',
     component: () => import('layouts/MainLayout.vue'),
-    meta: { requiresRole: ['ROLE_ADMIN', 'ROLE_RH'] },
+    meta: { requiresRole: ['ROLE_MANAGER', 'ROLE_RH'] },
     children: [
       { path: '', component: () => import('pages/ManagerList.vue') }
     ]
@@ -28,7 +28,7 @@ const routes = [
   {
     path: '/interviews',
     component: () => import('layouts/MainLayout.vue'),
-    meta: { requiresRole: ['ROLE_USER','ROLE_ADMIN', 'ROLE_RH'] },
+    meta: { requiresRole: ['ROLE_USER','ROLE_MANAGER', 'ROLE_RH'] },
     children: [
       { path: '', component: () => import('pages/InterviewPage.vue') }
     ]
@@ -37,7 +37,7 @@ const routes = [
   {
     path: '/profile',
     component: () => import('layouts/MainLayout.vue'),
-    meta: { requiresRole: ['ROLE_USER','ROLE_ADMIN', 'ROLE_RH'] },
+    meta: { requiresRole: ['ROLE_USER','ROLE_MANAGER', 'ROLE_RH'] },
     children: [
       { path: '', component: () => import('pages/ProfilePage.vue') }
     ]

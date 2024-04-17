@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
-    <q-card class="bg-white text-white" style="width: 300px">
+    <q-card class="bg-white text-white width-fit" style="width: 300px">
       <q-form @submit="submit">
         <q-card-section>
           <div v-for="(key, value) in Object.keys(form).filter((i,v) => i !== 'id')" :key="value">
@@ -11,6 +11,19 @@
               :options="list_of_users"
               option-label="name"
               option-value="id"
+            />
+            <q-date
+              v-else-if="key === 'date'"
+              v-model="form[key]"
+              :label="key"
+              minimal
+            />
+            <q-rating
+              v-else-if="key === 'rating'"
+              v-model="form[key]"
+              size="2em"
+              :max="5"
+              color="primary"
             />
             <q-input
               v-else
@@ -71,3 +84,14 @@ const submit = () => {
   persistent.value = false
 }
 </script>
+
+
+<style>
+.q-date {
+  color:black;
+  width: 100%;
+}
+.width-fit {
+  width: 1200px!important;
+}
+</style>

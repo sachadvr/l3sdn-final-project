@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export const useObjectifsStore = defineStore('objectifs', {
   state: () => ({
-    objectifs: []
+    objectifs: [],
   }),
   actions: {
     async fetchObjectifs(userid, filters = {}) {
@@ -49,6 +49,18 @@ export const useObjectifsStore = defineStore('objectifs', {
         return true
       } catch (error) {
         console.error('Failed to patch objectif:', error)
+        return false
+      }
+    },
+    async postObjectif(objectif, managerID) {
+      try {
+        objectif.manager_id = managerID
+        await axios.post('/api/objectives', objectif, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return true
+      } catch (error) {
+        console.error('Failed to post objectif:', error)
         return false
       }
     }

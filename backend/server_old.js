@@ -157,7 +157,6 @@ app.get('/api/interviews/:userid', verifyToken, (req, res) => {
 
     try {
       const interviews = JSON.parse(data)
-      console.log(interviews)
       res.json(interviews.filter(i => i.user_id == req.params.userid))
     } catch (parseError) {
       res.status(500).json({ message: 'Impossible de lire les entretiens' })

@@ -22,7 +22,7 @@
               <q-card
                 v-for="interview in interviewsPerso"
                 :key="interview.id"
-                class="mx-2 cursor-pointer"
+                class="mx-2" :class="{'cursor-pointer': user.roles.some(r => r === 'ROLE_MANAGER')}"
                 @click="openInterview(interview)"
               >
                 <q-card-section>
@@ -36,6 +36,13 @@
                   </div>
                   <div class="text-subtitle2">Résumé</div>
                   <div>{{ interview.resume }}</div>
+                  <q-rating
+                    v-model="interview.rating"
+                    size="2em"
+                    :max="5"
+                    disable
+                    color="primary"
+                  />
                 </q-card-section>
               </q-card>
             </q-page-container>
@@ -43,7 +50,7 @@
               v-if="
                 user &&
                 user.roles.some(
-                  (r) => r === 'ROLE_ADMIN' || r === 'ROLE_MANAGER'
+                  (r) => r === 'ROLE_MANAGER'
                 )
               "
             >
@@ -72,13 +79,20 @@
                   </div>
                   <div class="text-subtitle2">Résumé</div>
                   <div>{{ interview.resume }}</div>
+                  <q-rating
+                    v-model="interview.rating"
+                    size="2em"
+                    :max="5"
+                    disable
+                    color="primary"
+                  />
                 </q-card-section>
               </q-card>
               <q-btn
                 v-if="
                   user &&
                   user.roles.some(
-                    (r) => r === 'ROLE_ADMIN' || r === 'ROLE_MANAGER'
+                    (r) => r === 'ROLE_MANAGER'
                   )
                 "
                 color="primary"
@@ -91,41 +105,40 @@
         </q-tab-panel>
         <q-tab-panel name="obj">
           <div class="text-h6">Mes objectifs de cette année</div>
-          <ObjectifPage :objectifs="objectifs" :objectifManager="" />
+          <ObjectifPage :objectifs="objectifs" :objectifManager="objectifsManager" />
         </q-tab-panel>
         <q-tab-panel name="obj-next">
           <div class="text-h6">Objectifs de l'année prochaine</div>
-          <ObjectifPage :objectifs="objectifsNextYear" :objectifManager="" />
+          <ObjectifPage :objectifs="objectifsNextYear" :objectifManager="objectifsNextYearManager" />
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
     <PopupManager
       v-if="editShowPopup"
       :editedRow="editedObj"
-      :selectedKeys="['id', 'resume', 'date']"
+      :selectedKeys="['id', 'resume', 'date', 'rating']"
       @update="updateRows"
     />
     <PopupManager
       v-if="postShowPopup"
       :editedRow="postObj"
-      :selectedKeys="['resume', 'date', 'user_id']"
+      :selectedKeys="['resume', 'date', 'user_id', 'rating']"
       @update="postRows"
     />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useAuthStore } from "src/stores/auth";
-import { useInterviewsStore } from "src/stores/interviews";
-import { useObjectifsStore } from "src/stores/objectifs";
-import { useUserStore } from "src/stores/users";
-import { onMounted } from "vue";
-import { useQuasar } from "quasar";
+import { ref } from 'vue';
+import { useAuthStore } from 'src/stores/auth';
+import { useInterviewsStore } from 'src/stores/interviews';
+import { useObjectifsStore } from 'src/stores/objectifs';
+import { useUserStore } from 'src/stores/users';
+import { onMounted } from 'vue';
+import { useQuasar } from 'quasar';
 const $q = useQuasar();
-import axios from "axios";
-import ObjectifPage from "pages/ObjectifPage.vue";
-import PopupManager from "components/PopupManager.vue";
+import ObjectifPage from 'pages/ObjectifPage.vue';
+import PopupManager from 'components/PopupManager.vue';
 const user = ref(null);
 const interviewsPerso = ref([]);
 const interviewsManager = ref([]);
@@ -145,9 +158,9 @@ const updateRows = async (id, data) => {
 
   if (await interviews_store.patchInterview(data)) {
     $q.notify({
-      color: "positive",
-      position: "bottom",
-      message: "Entretien mis à jour avec succès",
+      color: 'positive',
+      position: 'bottom',
+      message: 'Entretien mis à jour avec succès',
     });
   }
 };
@@ -156,19 +169,18 @@ const postRows = async (id, data) => {
   postShowPopup.value = false;
 
   if (data.user_id) {
-    console.log(data.user_id);
     data.user_id = parseInt(data.user_id.id);
   }
   if (await interviews_store.postInterview(data, user.value.id)) {
     $q.notify({
-      color: "positive",
-      position: "bottom",
-      message: "Entretien ajouté avec succès",
+      color: 'positive',
+      position: 'bottom',
+      message: 'Entretien ajouté avec succès',
     });
   }
 };
 
-const tab = ref("interview");
+const tab = ref('interview');
 const auth_store = useAuthStore();
 const interviews_store = useInterviewsStore();
 const objectif_store = useObjectifsStore();
@@ -205,22 +217,16 @@ onMounted(async () => {
   ) {
     objectifsNextYear.value = objectif_store.objectifs;
   }
-  if (
-    await objectif_store.fetchObjectifsByManager(
+    objectifsManager.value = await objectif_store.fetchObjectifsByManager(
       user.value.id,
       new Date().getFullYear()
-    )
-  ) {
-    objectifsManager.value = objectif_store.objectifs;
-  }
-  if (
-    await objectif_store.fetchObjectifsByManager(
+    );
+
+    objectifsNextYearManager.value = await objectif_store.fetchObjectifsByManager(
       user.value.id,
       new Date().getFullYear() + 1
     )
-  ) {
-    objectifsNextYearManager.value = objectif_store.objectifs;
-  }
+
 });
 
 const isOutOfDate = (date) => {
@@ -228,14 +234,21 @@ const isOutOfDate = (date) => {
 };
 
 const openInterview = (interview) => {
-  editedObj.value = interview;
-  editShowPopup.value = true;
+  if (
+    user.value.roles.some(
+      (r) => r === 'ROLE_MANAGER'
+    )
+  ) {
+    editedObj.value = interview;
+    editShowPopup.value = true;
+  }
 };
 const openPostPopup = () => {
   postObj.value = {
-    resume: "",
-    date: "",
-    user_id: "",
+    resume: '',
+    rating: 0,
+    date: '',
+    user_id: '',
   };
   postShowPopup.value = true;
 };

@@ -62,7 +62,6 @@ const filteredLinks = computed(() => {
   return essentialLinks.value.filter(link => {
     const route = routes.find(r => r.path === link.link)
     const role = getRoleFromRoute(route)
-    console.log(link.link, role, user.value.roles)
     return user.value.roles.some(r => role.includes(r) || role.length === 0)
   })
 })
