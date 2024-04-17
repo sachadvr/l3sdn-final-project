@@ -85,4 +85,17 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'Failed to process request', error: error.message });
   }
 });
+
+router.delete('/:id', async (req, res) => {
+  const data = await getData('objectifs', res);
+  const index = data.findIndex(i => i.id == req.params.id);
+  if (index === -1) {
+    res.status(404).json({ message: `Objectif with id ${req.params.id} not found` });
+    return;
+  }
+
+  data.splice(index, 1);
+  saveData('objectifs', data, res);
+  res.json({ message: `Objectif with id ${req.params.id} deleted` });
+});
 module.exports = router;

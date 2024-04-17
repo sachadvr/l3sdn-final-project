@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "date": "2024/04/20",
+    "date": "2024/04/24",
     "resume": "2323sdsdds",
     "user_id": 3,
     "manager_id": 1
@@ -18,6 +18,13 @@
     "date": "2025/04/17",
     "resume": "Doit s'améliorer",
     "user_id": 3,
+    "manager_id": 1
+  },
+  {
+    "id": 4,
+    "date": "2024/04/09",
+    "resume": "Ceci est un test",
+    "user_id": 6,
     "manager_id": 1
   }
 ]

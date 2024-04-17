@@ -117,6 +117,8 @@
       v-if="editShowPopup"
       :editedRow="editedObj"
       :selectedKeys="['id', 'resume', 'date', 'rating']"
+      :delete="true"
+      @on-delete="deleteRow"
       @update="updateRows"
     />
     <PopupManager
@@ -165,6 +167,17 @@ const updateRows = async (id, data) => {
   }
 };
 
+const deleteRow = async (id) => {
+  editShowPopup.value = false;
+
+  if (await interviews_store.deleteInterview(id)) {
+    $q.notify({
+      color: 'positive',
+      position: 'bottom',
+      message: 'Entretien supprimé avec succès',
+    });
+  }
+};
 const postRows = async (id, data) => {
   postShowPopup.value = false;
 

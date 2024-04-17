@@ -41,8 +41,9 @@
           </div>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn label="Annuler" color="secondary" flat @click="cancel" />
-          <q-btn label="Sauvegarder" color="primary" text @click="submit" />
+          <q-btn label="Annuler" color="secondary" flat @click="cancel"/>
+          <q-btn v-if="deleteMode" label="Supprimer" color="red" flat @click="deleteItem"/>
+          <q-btn label="Sauvegarder" color="primary" text @click="submit"/>
         </q-card-actions>
       </q-form>
     </q-card>
@@ -52,26 +53,32 @@
 <script setup>
 import {ref, defineProps, defineEmits, watch} from 'vue'
 import {onMounted} from 'vue'
-import { useUserStore } from 'src/stores/users'
+import {useUserStore} from 'src/stores/users'
 import {useAuthStore} from 'stores/auth'
-const user_store = useUserStore();
-const auth_store = useAuthStore();
+
+const user_store = useUserStore()
+const auth_store = useAuthStore()
 
 const props = defineProps({
   editedRow: Object,
-  selectedKeys: Array
+  selectedKeys: Array,
+  delete: {
+    type: Boolean,
+    default: false
+  }
 })
 
 
-const emits = defineEmits(['update'])
+const emits = defineEmits(['update', 'onDelete'])
 
 const persistent = ref(true)
 
-const form = ref({});
+const form = ref({})
 
 const list_of_users = ref([])
 const list_of_managers = ref([])
 const user = ref({})
+const deleteMode = ref(false)
 
 const cancel = () => {
   persistent.value = false
@@ -81,6 +88,7 @@ onMounted(async () => {
   props.selectedKeys.forEach(key => {
     form.value[key] = props.editedRow[key]
   })
+  deleteMode.value = props.delete
   user.value = await auth_store.getCurrentUser()
   if (await user_store.getUserByManager(user.value.id)) {
     list_of_users.value = user_store.userByManager
@@ -88,10 +96,14 @@ onMounted(async () => {
 
   list_of_managers.value = await user_store.getManagers()
 
-});
+})
 
 const submit = () => {
   emits('update', form.value.id, form.value)
+  persistent.value = false
+}
+const deleteItem = () => {
+  emits('onDelete', form.value.id)
   persistent.value = false
 }
 </script>
@@ -99,10 +111,11 @@ const submit = () => {
 
 <style>
 .q-date {
-  color:black;
+  color: black;
   width: 100%;
 }
+
 .width-fit {
-  width: 1200px!important;
+  width: 1200px !important;
 }
 </style>

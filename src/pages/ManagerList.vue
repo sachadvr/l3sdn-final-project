@@ -65,3 +65,8 @@ const createRow = async (id, data) => {
 };
 
 </script>
+<style>
+.ml-5 {
+  margin-left: 5px;
+}
+</style>

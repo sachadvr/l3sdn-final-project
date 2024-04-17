@@ -38,9 +38,9 @@
         @click="openObjectif(objectif)"
       >
         <q-card-section>
-          <div v-if="userList && userList.find((u) => u.id == objectif.user_id)" class="text-black center p-5" >
-            {{userList.find((u) => u.id == objectif.user_id).name}}
-            {{userList.find((u) => u.id == objectif.user_id).firstname}}
+          <div v-if="userList && userList.find((u) => u.id == objectif.user_id)" class="text-black center p-5">
+            {{ userList.find((u) => u.id == objectif.user_id).name }}
+            {{ userList.find((u) => u.id == objectif.user_id).firstname }}
           </div>
           <div
             class="text-h6 w-fit"
@@ -70,6 +70,8 @@
     v-if="editShowPopup"
     :editedRow="editedObj"
     :selectedKeys="['id', 'resume', 'date']"
+    :delete="true"
+    @on-delete="deleteRow"
     @update="updateRows"
   />
   <PopupManager
@@ -81,106 +83,122 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useAuthStore } from 'src/stores/auth';
-import { useObjectifsStore } from 'src/stores/objectifs';
-import { onMounted } from 'vue';
-import { defineProps } from 'vue';
-import { useQuasar } from 'quasar';
-import { useUserStore } from 'src/stores/users'
+import {ref} from 'vue'
+import {useAuthStore} from 'src/stores/auth'
+import {useObjectifsStore} from 'src/stores/objectifs'
+import {onMounted} from 'vue'
+import {defineProps} from 'vue'
+import {useQuasar} from 'quasar'
+import {useUserStore} from 'src/stores/users'
 import PopupManager from 'components/PopupManager.vue'
 
-const user = ref(null);
-const editShowPopup = ref(false);
-const postShowPopup = ref(false);
+const user = ref(null)
+const editShowPopup = ref(false)
+const postShowPopup = ref(false)
 
-const $q = useQuasar();
-const auth_store = useAuthStore();
-const user_store = useUserStore();
-const objectif_store = useObjectifsStore();
+const $q = useQuasar()
+const auth_store = useAuthStore()
+const user_store = useUserStore()
+const objectif_store = useObjectifsStore()
 
 
 const props = defineProps({
   objectifs: Array,
   objectifManager: Array,
-});
-const objectifsPerso = ref(props.objectifs);
-const objectifsManager = ref(props.objectifManager);
+})
+const objectifsPerso = ref(props.objectifs)
+const objectifsManager = ref(props.objectifManager)
 
-const editedObj = ref(null);
-const postObj = ref(null);
-const userList = ref([]);
+const editedObj = ref(null)
+const postObj = ref(null)
+const userList = ref([])
 onMounted(async () => {
-  user.value = await auth_store.getCurrentUser();
+  user.value = await auth_store.getCurrentUser()
   if (await user_store.getUserByManager(user.value.id)) {
-    userList.value = user_store.userByManager;
+    userList.value = user_store.userByManager
   }
-});
+})
 const updateRows = async (id, data) => {
   if (objectif_store.patchObjectif(data)) {
     $q.notify({
       color: 'positive',
       position: 'bottom',
       message: 'Objectif modifié avec succès',
-    });
+    })
   }
-  editShowPopup.value = false;
-};
+  editShowPopup.value = false
+}
 
 const postRows = async (id, data) => {
-  data.user_id = parseInt(data.user_id.id);
+  data.user_id = parseInt(data.user_id.id)
   if (objectif_store.postObjectif(data, user.value.id)) {
     $q.notify({
       color: 'positive',
       position: 'bottom',
       message: 'Objectif ajouté avec succès',
-    });
+    })
   }
-  postShowPopup.value = false;
-};
+  postShowPopup.value = false
+}
 
 const isOutOfDate = (date) => {
-  return new Date(date) < new Date();
-};
+  return new Date(date) < new Date()
+}
 
 const openObjectif = (interview) => {
   if (user.value.roles.some((r) => r === 'ROLE_MANAGER')) {
-    editedObj.value = interview;
-    editShowPopup.value = true;
+    editedObj.value = interview
+    editShowPopup.value = true
   }
-};
+}
 const openPostPopup = () => {
   postObj.value = {
     resume: '',
     date: '',
     user_id: '',
-  };
-  postShowPopup.value = true;
-};
+  }
+  postShowPopup.value = true
+}
+const deleteRow = async (id) => {
+  if (objectif_store.deleteObjectif(id)) {
+    $q.notify({
+      color: 'positive',
+      position: 'bottom',
+      message: 'Objectif supprimé avec succès',
+    })
+  }
+  editShowPopup.value = false
+}
 </script>
 
 <style>
 .q-card {
   border-radius: 12px;
 }
+
 .mx-2 {
   margin-top: 10px;
 }
+
 .w-fit {
   width: fit-content;
   color: white;
   padding: 0 1rem;
 }
+
 .flex {
   display: flex;
   gap: 2rem;
 }
+
 .center {
   text-align: center;
 }
+
 .q-page-container {
   flex: 1;
 }
+
 .bg-primary,
 .bg-negative {
   border-radius: 12px;

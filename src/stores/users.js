@@ -87,6 +87,17 @@ export const useUserStore = defineStore('users', {
         console.error('Failed to fetch managers:', error)
         return false
       }
+    },
+    async deleteUser(id) {
+      try {
+        const response = await axios.delete(`/api/users/${id}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Failed to delete user:', error)
+        return false
+      }
     }
   }
 })

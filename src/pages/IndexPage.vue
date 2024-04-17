@@ -117,7 +117,6 @@ onMounted(async () => {
   }
 
   if (await interviewStore.fetchInterviews(user.value.id)) {
-    // if there is any interviews that are > today
     if (interviewStore.interviews.some((i) => new Date(i.date) > new Date())) {
       nextPersonalInterview.value = interviewStore.interviews.find((i) => new Date(i.date) > new Date()).date;
     } else {
@@ -125,7 +124,6 @@ onMounted(async () => {
     }
   }
   if (await interviewStore.getInterviewByManager(user.value.id)) {
-    // if there is any interviews that are > today
     if (interviewStore.managerInterviews.some((i) => new Date(i.date) > new Date())) {
       nextInterview.value = new Date(interviewStore.managerInterviews[0].date).toLocaleDateString();
     } else {
@@ -143,7 +141,9 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+$animation-delay: 0.2s;
+
 .gap-32{
   gap: 32px;
 }
@@ -158,5 +158,12 @@ onMounted(async () => {
 
 .q-card {
   border-radius: 12px ;
+  animation: fadeIn 1s ease-in-out;
+  animation-fill-mode: both;
+}
+@for $i from 1 through 10 {
+  .q-card:nth-of-type(#{$i}) {
+    animation-delay: $animation-delay * $i;
+  }
 }
 </style>

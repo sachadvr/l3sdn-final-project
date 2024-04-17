@@ -4,7 +4,6 @@ const { getData, saveData } = require('../utils/fileUtils');
 
 const isGranted = (user, role) => user && user.role === role;
 
-// Helper to assign new ID
 const assignNewId = (data) => {
   if (data.length === 0) return 1;
   const maxId = Math.max(...data.map(item => item.id));
@@ -67,6 +66,22 @@ router.post('/', async (req, res) => {
 
   if (await saveData('users', data, res)) {
     res.json(newUser);
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  const id = req.params.id;
+  const data = await getData('users', res);
+  const userIndex = data.findIndex(u => u.id == id);
+
+  if (userIndex === -1) {
+    return res.status(404).json({ message: 'Utilisateur non trouvé' });
+  }
+
+  data.splice(userIndex, 1);
+
+  if (await saveData('users', data, res)) {
+    res.json({ message: 'Utilisateur supprimé' });
   }
 });
 

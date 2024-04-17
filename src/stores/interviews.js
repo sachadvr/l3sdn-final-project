@@ -92,6 +92,22 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false;
         return false;
       }
+    },
+    async deleteInterview(interviewID) {
+      this.isLoading = true;
+      this.error = null;
+      try {
+        const response = await axios.delete(`/api/interviews/${interviewID}`, {
+          headers: {Authorization: `Bearer ${localStorage.getItem('token')}`},
+        });
+        this.isLoading = false;
+        return response.data;
+      } catch (error) {
+        console.error('Failed to delete interview:', error);
+        this.error = error.message;
+        this.isLoading = false;
+        return false;
+      }
     }
   }
 });

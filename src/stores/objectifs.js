@@ -63,6 +63,17 @@ export const useObjectifsStore = defineStore('objectifs', {
         console.error('Failed to post objectif:', error)
         return false
       }
+    },
+    async deleteObjectif(objectifId) {
+      try {
+        await axios.delete(`/api/objectives/${objectifId}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return true
+      } catch (error) {
+        console.error('Failed to delete objectif:', error)
+        return false
+      }
     }
   }
 })
