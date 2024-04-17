@@ -12,5 +12,12 @@
     "resume": "Ceci est un test",
     "user_id": 3,
     "manager_id": 1
+  },
+  {
+    "id": 3,
+    "date": "2025/04/17",
+    "resume": "Doit s'améliorer",
+    "user_id": 3,
+    "manager_id": 1
   }
 ]

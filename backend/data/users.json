@@ -7,14 +7,19 @@
     "manager_id": null,
     "name": "Rodone",
     "firstname": "Romain",
-    "job": "Manager"
+    "job": "Manager",
+    "salary": 50000
   },
   {
     "id": 2,
     "username": "charlotte",
     "password": "",
     "role": "ROLE_RH",
-    "manager_id": null
+    "manager_id": null,
+    "name": "Evrard",
+    "firstname": "Charlotte",
+    "job": "RH",
+    "salary": 51000
   },
   {
     "id": 3,
@@ -24,7 +29,8 @@
     "firstname": "Théo",
     "job": "Développeur Fullstack",
     "role": "ROLE_USER",
-    "manager_id": 1
+    "manager_id": 1,
+    "salary": "32000"
   },
   {
     "id": 4,
@@ -34,7 +40,8 @@
     "firstname": "Sacha",
     "job": "Développeur Fullstack",
     "role": "ROLE_USER",
-    "manager_id": 1
+    "manager_id": 1,
+    "salary": 30000
   },
   {
     "id": 5,
@@ -44,6 +51,18 @@
     "firstname": "Julien",
     "job": "Devops",
     "role": "ROLE_USER",
-    "manager_id": 4
+    "manager_id": 4,
+    "salary": "35000"
+  },
+  {
+    "id": 6,
+    "name": "Dufrenois",
+    "firstname": "Melene",
+    "username": "melene",
+    "password": "",
+    "role": "ROLE_USER",
+    "manager_id": 1,
+    "job": "Secrétaire",
+    "salary": "18000"
   }
 ]

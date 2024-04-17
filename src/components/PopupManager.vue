@@ -12,6 +12,14 @@
               option-label="name"
               option-value="id"
             />
+            <q-select
+              v-else-if="key === 'manager_id'"
+              v-model="form[key]"
+              :label="key"
+              :options="list_of_managers"
+              option-label="name"
+              option-value="id"
+            />
             <q-date
               v-else-if="key === 'date'"
               v-model="form[key]"
@@ -62,6 +70,7 @@ const persistent = ref(true)
 const form = ref({});
 
 const list_of_users = ref([])
+const list_of_managers = ref([])
 const user = ref({})
 
 const cancel = () => {
@@ -76,6 +85,8 @@ onMounted(async () => {
   if (await user_store.getUserByManager(user.value.id)) {
     list_of_users.value = user_store.userByManager
   }
+
+  list_of_managers.value = await user_store.getManagers()
 
 });
 

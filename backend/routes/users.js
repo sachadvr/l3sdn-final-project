@@ -15,12 +15,16 @@ router.get('/', async (req, res) => {
     const managerId = req.query.manager_id;
     const data = await getData('users', res);
 
+    if (req.query.role) {
+        return res.json(data.filter(u => u.role === req.query.role));
+    }
+
     if (isGranted(req.user, 'ROLE_RH')) {
-        return res.json(data.filter(u => u.role === 'ROLE_USER').map(u => ({ id: u.id, name: u.name, firstname: u.firstname, job: u.job})));
+        return res.json(data.filter(u => u.role === 'ROLE_USER').map(u => ({ id: u.id, name: u.name, firstname: u.firstname, job: u.job, salary: u.salary })));
     }
 
     if (managerId) {
-        return res.json(data.filter(u => u.manager_id == managerId).map(u => ({ id: u.id, name: u.name, firstname: u.firstname, job: u.job})));
+        return res.json(data.filter(u => u.manager_id == managerId).map(u => ({ id: u.id, name: u.name, firstname: u.firstname, job: u.job, salary: u.salary })));
     }
 
     res.json(data.map(u => ({ id: u.id, username: u.username, role: u.role, manager_id: u.manager_id, name: u.name, firstname: u.firstname, job: u.job })));
@@ -53,6 +57,16 @@ router.patch('/:id', async (req, res) => {
 
   if (await saveData('users', data, res)) {
     res.json(updatedUser);
+  }
+});
+
+router.post('/', async (req, res) => {
+  const data = await getData('users', res);
+  const newUser = { id: assignNewId(data), ...req.body };
+  data.push(newUser);
+
+  if (await saveData('users', data, res)) {
+    res.json(newUser);
   }
 });
 

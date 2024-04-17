@@ -65,6 +65,28 @@ export const useUserStore = defineStore('users', {
         console.error('Failed to update user:', error)
         return false
       }
+    },
+    async createuser(data) {
+      try {
+        const response = await axios.post('/api/users', data, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Failed to create user:', error)
+        return false
+      }
+    },
+    async getManagers() {
+      try {
+        const response = await axios.get('/api/users?role=ROLE_MANAGER', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Failed to fetch managers:', error)
+        return false
+      }
     }
   }
 })

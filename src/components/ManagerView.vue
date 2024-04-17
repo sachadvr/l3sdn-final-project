@@ -19,7 +19,7 @@
       @row-click="onRowClick"
     >
     </q-table>
-      <EditForm v-if="show" :editedRow="editedRow" :selected-keys="['id','name','firstname','job']" @update="updateRows"/>
+      <EditForm v-if="show" :editedRow="editedRow" :selected-keys="['id','name','firstname','job', 'salary']" @update="updateRows"/>
 </template>
 
 <script setup>

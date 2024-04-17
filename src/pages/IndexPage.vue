@@ -24,7 +24,7 @@
       </q-card-actions>
     </q-card>
     <q-page-container class="dashboard-grid">
-      <q-card>
+      <q-card v-if="user && user.roles.some(r => r === 'ROLE_MANAGER' || r === 'ROLE_RH')">
         <q-card-section>
           <q-card-title>
             Nombre de managés
@@ -36,7 +36,7 @@
           </q-card-subtitle>
         </q-card-section>
       </q-card>
-      <q-card>
+      <q-card v-if="user && user.roles.some(r => r === 'ROLE_MANAGER' || r === 'ROLE_RH')">
         <q-card-section>
           <q-card-title>
             Prochain entretien
