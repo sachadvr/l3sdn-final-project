@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getData,saveData } = require('../utils/fileUtils');
+const { getData, saveData } = require('../utils/fileUtils');
 
 
 router.get('/', async (req, res) => {
@@ -36,15 +36,25 @@ router.get('/:userid', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   const data = await getData('objectifs', res);
 
-    const index = data.findIndex(i => i.id == req.params.id);
-    if (index === -1) {
-        res.status(404).json({ message: `Objectif with id ${req.params.id} not found` });
-        return;
-    }
+  const index = data.findIndex(i => i.id == req.params.id);
+  if (index === -1) {
+    res.status(404).json({ message: `Objectif with id ${req.params.id} not found` });
+    return;
+  }
 
-    data[index] = { ...data[index], ...req.body };
-    saveData('objectifs', data, res);
-    res.json(data[index]);
+  data[index] = { ...data[index], ...req.body };
+  saveData('objectifs', data, res);
+  res.json(data[index]);
+});
+
+router.get('/manager/:managerid/:year', async (req, res) => {
+  try {
+    const data = await getData('objectifs', res);
+    const userObjectifs = data.filter(o => o.manager_id === req.params.managerid && o.date.startsWith(req.params.year));
+    res.json(userObjectifs);
+  } catch (error) {
+    res.status(404).json({ message: 'Objectives not found for this manager', error: error.message });
+  }
 });
 
 module.exports = router;

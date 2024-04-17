@@ -30,6 +30,17 @@ export const useObjectifsStore = defineStore('objectifs', {
         return null
       }
     },
+    async fetchObjectifsByManager(managerId, year) {
+      try {
+        const response = await axios.get(`/api/objectives/manager/${managerId}/${year}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return response.data
+      } catch (error) {
+        console.error('Failed to fetch objectifs:', error)
+        return null
+      }
+    },
     async patchObjectif(objectif) {
       try {
         await axios.patch(`/api/objectives/${objectif.id}`, objectif, {
