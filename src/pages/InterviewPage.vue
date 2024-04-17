@@ -208,10 +208,8 @@ const interviews_store = useInterviewsStore()
 const objectif_store = useObjectifsStore()
 const user_store = useUserStore()
 let userList = []
+
 onMounted(async () => {
-  if (await user_store.getUsers()) {
-    userList = user_store.users
-  }
   user.value = await auth_store.getCurrentUser()
   if (await interviews_store.fetchInterviews(user.value.id)) {
     interviewsPerso.value = interviews_store.interviews.sort(
@@ -223,7 +221,13 @@ onMounted(async () => {
     interviewsManager.value = interviews_store.managerInterviews.sort(
       (a, b) => new Date(b.date) - new Date(a.date)
     )
+      console.log(interviewsManager.value)
   }
+
+})
+
+onMounted(async () => {
+  user.value = await auth_store.getCurrentUser()
 
   if (
     await objectif_store.fetchObjectifs(user.value.id, {
@@ -239,6 +243,12 @@ onMounted(async () => {
   ) {
     objectifsNextYear.value = objectif_store.objectifs
   }
+
+
+})
+
+onMounted(async () => {
+  user.value = await auth_store.getCurrentUser()
   objectifsManager.value = await objectif_store.fetchObjectifsByManager(
     user.value.id,
     new Date().getFullYear()
@@ -248,7 +258,13 @@ onMounted(async () => {
     user.value.id,
     new Date().getFullYear() + 1
   )
+  console.log('ici')
+})
 
+onMounted(async () => {
+  if (await user_store.getUsers()) {
+    userList = user_store.users
+  }
 })
 
 const isOutOfDate = (date) => {
