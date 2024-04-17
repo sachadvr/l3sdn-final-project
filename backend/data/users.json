@@ -30,7 +30,7 @@
     "job": "Développeur Fullstack",
     "role": "ROLE_USER",
     "manager_id": 1,
-    "salary": "34000"
+    "salary": "35000"
   },
   {
     "id": 4,
@@ -64,5 +64,16 @@
     "manager_id": 1,
     "job": "Secrétaire",
     "salary": "18000"
+  },
+  {
+    "id": 7,
+    "name": "Maveau",
+    "firstname": "Lucas",
+    "username": "lucas",
+    "password": "",
+    "role": "ROLE_USER",
+    "manager_id": 1,
+    "job": "Product Owner",
+    "salary": "12000"
   }
 ]
