@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
-import { useQuasar } from 'quasar'
+import { getCurrentInstance } from 'vue';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -18,6 +18,12 @@ export const useAuthStore = defineStore('auth', {
     }
   },
   actions: {
+    notifyUser(message, type) {
+      const instance = getCurrentInstance();
+      if (instance) {
+        instance.appContext.config.globalProperties.$notify(message, type);
+      }
+    },
     async login(username, password) {
       try {
         const response = await axios.post('/api/login', { username, password });
@@ -43,7 +49,6 @@ export const useAuthStore = defineStore('auth', {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          this.notifyUser('warning', 'No token found. Please log in.');
           return false
         }
         const response = await axios.post('/api/login/verify', {}, {
@@ -77,14 +82,6 @@ export const useAuthStore = defineStore('auth', {
       }
       return this.user;
     },
-    notifyUser(type, message) {
-
-      useQuasar().notify({
-        type: type,
-        message: message
-      });
-    }
-
   },
 });
 
