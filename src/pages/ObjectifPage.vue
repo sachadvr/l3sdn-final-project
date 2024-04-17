@@ -22,6 +22,8 @@
           <div>{{ objectif.resume }}</div>
         </q-card-section>
       </q-card>
+
+      <div v-if="objectifsPerso && objectifsPerso.length === 0">Aucun objectif enregistré</div>
     </q-page-container>
     <q-page-container
       v-if="
@@ -54,6 +56,7 @@
           <div>{{ objectif.resume }}</div>
         </q-card-section>
       </q-card>
+      <div v-if="objectifsManager && objectifsManager.length === 0">Aucun objectif enregistré</div>
       <q-btn
         v-if="
           user &&

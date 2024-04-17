@@ -20,6 +20,12 @@
             </q-list>
           </q-btn-dropdown>
 
+        <q-btn
+          icon="refresh"
+          flat round dense
+          class="q-mr-sm ml-5"
+          @click="router.go()"
+        />
         <q-toolbar-title v-if="!user">RH Manager</q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -83,3 +89,8 @@ const toggleLeftDrawer = () => {
 }
 </script>
 
+<style>
+.ml-5 {
+  margin-left: 5px;
+}
+</style>

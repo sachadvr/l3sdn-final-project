@@ -45,6 +45,7 @@
                   />
                 </q-card-section>
               </q-card>
+              <div v-if="interviewsPerso && interviewsPerso.length === 0">Aucun entretien enregistré</div>
             </q-page-container>
             <q-page-container
               v-if="
@@ -88,6 +89,8 @@
                   />
                 </q-card-section>
               </q-card>
+              <div v-if="interviewsManager && interviewsManager.length === 0">Aucun entretien enregistré</div>
+
               <q-btn
                 v-if="
                   user &&
@@ -138,7 +141,11 @@ import { useObjectifsStore } from 'src/stores/objectifs';
 import { useUserStore } from 'src/stores/users';
 import { onMounted } from 'vue';
 import { useQuasar } from 'quasar';
+import { watch } from 'vue';
+import { useRouter } from 'vue-router';
 const $q = useQuasar();
+const router = useRouter();
+console.log(router)
 import ObjectifPage from 'pages/ObjectifPage.vue';
 import PopupManager from 'components/PopupManager.vue';
 const user = ref(null);
@@ -265,6 +272,13 @@ const openPostPopup = () => {
   };
   postShowPopup.value = true;
 };
+
+watch(
+  () => tab.value,
+  async () => {
+    router.push({ query: { tab: tab.value } });
+  }
+);
 </script>
 
 <style>
