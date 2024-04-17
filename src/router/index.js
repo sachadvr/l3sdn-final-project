@@ -1,8 +1,8 @@
-import { route } from 'quasar/wrappers'
-import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
+import {route} from 'quasar/wrappers'
+import {createRouter, createMemoryHistory, createWebHistory, createWebHashHistory} from 'vue-router'
 import routes from './routes'
 import {useAuthStore} from '../stores/auth'
-import { useQuasar } from 'quasar'
+import {useQuasar} from 'quasar'
 
 /*
  * If not building with SSR mode, you can
@@ -19,7 +19,7 @@ export default route(function (/* { store, ssrContext } */) {
     : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory)
 
   const Router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
+    scrollBehavior: () => ({left: 0, top: 0}),
     routes,
 
     // Leave this as is and make changes in quasar.conf.js instead!
@@ -30,26 +30,26 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach(async (to, from, next) => {
     const $q = useQuasar()
-    const user = await useAuthStore().getCurrentUser();
-    const requiresRole = to.matched.some(record => record.meta && record.meta.requiresRole);
+    const user = await useAuthStore().getCurrentUser()
+    const requiresRole = to.matched.some(record => record.meta && record.meta.requiresRole)
     if (requiresRole) {
-      const userRole = user && user.roles;
-      const isAllowed = user && to.matched.some(record => record.meta.requiresRole && record.meta.requiresRole.some(role => userRole.includes(role)));
+      const userRole = user && user.roles
+      const isAllowed = user && to.matched.some(record => record.meta.requiresRole && record.meta.requiresRole.some(role => userRole.includes(role)))
 
       if (!isAllowed && user) {
-        $q.notify('Tu n\'as pas les droits pour accéder à cette page');
-        next(from);
+        $q.notify('Tu n\'as pas les droits pour accéder à cette page')
+        next(from)
       }
       if (!isAllowed && !user) {
-        $q.notify('Tu dois être connecté pour accéder à cette page');
-        next('/login');
+        $q.notify('Tu dois être connecté pour accéder à cette page')
+        next('/login')
       } else {
-        next();
+        next()
       }
     } else {
-      next();
+      next()
     }
-  });
+  })
 
 
   return Router
