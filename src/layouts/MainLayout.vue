@@ -81,7 +81,6 @@ watch(() => route.fullPath, async () => {
     return
   }
   setTimeout(async () => {
-    console.log(authStore.user)
     user.value = authStore.user
     if (!user.value) {
       return
