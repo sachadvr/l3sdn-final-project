@@ -64,26 +64,42 @@ const user = ref(null)
 const darkmode = ref(false)
 
 onMounted(async () => {
-  user.value = await authStore.getCurrentUser()
+  user.value = authStore.user
+  if (!user.value) {
+    return
+  }
 
-  if (user.value) {
-    darkmode.value = user.value.darkmode ?? false
+  await userStore.getUser(user.value.id)
+
+  if (userStore.currentuser) {
+    darkmode.value = userStore.currentuser.darkmode ?? false
   }
 })
 
 watch(() => route.fullPath, async () => {
-  user.value = await authStore.getCurrentUser()
-
-  if (user.value) {
-    darkmode.value = user.value.darkmode ?? false
+  if (route.fullPath === '/logout') {
+    return
   }
+  setTimeout(async () => {
+    console.log(authStore.user)
+    user.value = authStore.user
+    if (!user.value) {
+      return
+    }
+    await userStore.getUser(user.value.id)
+
+    if (userStore.currentuser) {
+      darkmode.value = userStore.currentuser.darkmode ?? false
+    }
+  }, 50)
+
 })
 
 watch(darkmode, (newValue) => {
   $q.dark.set(newValue)
 
   if (user.value) {
-    userStore.updateUser(user.value.id, { darkmode: newValue })
+    userStore.updateUser(user.value.id, {darkmode: newValue})
   }
 })
 
