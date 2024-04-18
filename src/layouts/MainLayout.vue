@@ -115,7 +115,9 @@ watch(
   () => {
     $q.dark.set(darkmode.value)
 
-    useUserStore().updateUser(user.value.id, {darkmode: darkmode.value})
+    if (user.value) {
+      useUserStore().updateUser(user.value.id, {darkmode: darkmode.value})
+    }
   }
 )
 

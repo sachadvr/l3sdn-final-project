@@ -32,8 +32,8 @@
     "job": "Développeur Fullstack",
     "role": "ROLE_USER",
     "manager_id": 1,
-    "salary": "34000",
-    "darkmode": false
+    "salary": "35000",
+    "darkmode": true
   },
   {
     "id": 4,
@@ -68,7 +68,8 @@
     "role": "ROLE_USER",
     "manager_id": 1,
     "job": "Secrétaire",
-    "salary": "18000"
+    "salary": "18000",
+    "darkmode": false
   },
   {
     "id": 7,
