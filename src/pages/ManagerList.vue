@@ -54,6 +54,15 @@ const newUser = () => {
 }
 const createRow = async (id, data) => {
   postShowPopup.value = false
+  if (!data.name || !data.firstname || !data.username || !data.role || !data.manager_id || !data.job || !data.salary) {
+    $q.notify({
+      type: 'negative',
+      position: 'bottom',
+      message: 'Veuillez remplir tous les champs nécessaires.',
+    })
+    return
+  }
+  
   if (data.manager_id) {
     data.manager_id = parseInt(data.manager_id.id)
   }
@@ -63,12 +72,19 @@ const createRow = async (id, data) => {
       position: 'bottom',
       message: 'Utilisateur ajouté avec succès',
     })
+  } else {
+    $q.notify({
+      type: 'negative',
+      position: 'bottom',
+      message: 'Erreur lors de la création de l\'utilisateur.',
+    })
   }
 }
+
 
 </script>
 <style>
 .ml-5 {
-  margin-left: 5px;
+  margin-left: 5px
 }
 </style>

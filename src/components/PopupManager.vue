@@ -21,6 +21,12 @@
               option-label="name"
               option-value="id"
             />
+            <q-select
+              v-else-if="key === 'role'"
+              v-model="form[key]"
+              :label="key"
+              :options="['ROLE_USER', 'ROLE_MANAGER', 'ROLE_RH']"
+            />
             <q-date
               v-else-if="key === 'date'"
               v-model="form[key]"
