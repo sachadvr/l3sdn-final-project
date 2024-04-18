@@ -55,83 +55,60 @@ import {useAuthStore} from 'stores/auth'
 import {useQuasar} from 'quasar'
 import {useUserStore} from 'stores/users'
 
+const $q = useQuasar()
+const authStore = useAuthStore()
+const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
-const $q = useQuasar()
-
-const user_store = useUserStore()
-
+const user = ref(null)
 const darkmode = ref(false)
-let user = ref(null)
+
 onMounted(async () => {
-  user.value = await useAuthStore().getCurrentUser()
-  if (user.value && user.value.darkmode) {
-    darkmode.value = user.value.darkmode
-    return
-  }
-  if (user.value && await user_store.getUser(user.value.id)) {
-    darkmode.value = user_store.currentuser.darkmode
-  }
+  user.value = await authStore.getCurrentUser()
 
+  if (user.value) {
+    darkmode.value = user.value.darkmode ?? false
+  }
 })
 
-const getRoleFromRoute = (route) => {
-  if (!route.meta) return []
-  return route.meta.requiresRole
-}
+watch(() => route.fullPath, async () => {
+  user.value = await authStore.getCurrentUser()
 
-const essentialLinks = ref([
-  {title: 'Tableau de bord', caption: '', icon: 'home', link: '/'},
-  {title: 'Collaborateurs', caption: '', icon: 'people', link: '/manage',},
-  {title: 'Mes entretiens', caption: '', icon: 'assignment', link: '/interviews'},
-  {title: 'Se déconnecter', caption: '', icon: 'logout', link: '/logout'}
-])
-
-const filteredLinks = computed(() => {
-  return essentialLinks.value.filter(link => {
-    const route = routes.find(r => r.path === link.link)
-    const role = getRoleFromRoute(route)
-    return user.value.roles.some(r => role.includes(r) || role.length === 0)
-  })
+  if (user.value) {
+    darkmode.value = user.value.darkmode ?? false
+  }
 })
 
-watch(
-  () => route.fullPath,
-  async () => {
-    user.value = await useAuthStore().getCurrentUser()
-    if (user.value && user.value.darkmode) {
-      darkmode.value = user.value.darkmode
-      return
-    }
-    if (user.value && await user_store.getUser(user.value.id)) {
-      darkmode.value = user_store.currentuser.darkmode
-    }
+watch(darkmode, (newValue) => {
+  $q.dark.set(newValue)
 
+  if (user.value) {
+    userStore.updateUser(user.value.id, { darkmode: newValue })
   }
-)
-
-watch(
-  () => darkmode.value,
-  () => {
-    $q.dark.set(darkmode.value)
-
-    if (user.value) {
-      useUserStore().updateUser(user.value.id, {darkmode: darkmode.value})
-    }
-  }
-)
+})
 
 const onItemClick = (link) => {
   router.push(link.link)
 }
 
-const toggleDarkMode = () => {
-  $q.dark.toggle()
-}
+const essentialLinks = ref([
+  { title: 'Tableau de bord', caption: '', icon: 'home', link: '/' },
+  { title: 'Collaborateurs', caption: '', icon: 'people', link: '/manage' },
+  { title: 'Mes entretiens', caption: '', icon: 'assignment', link: '/interviews' },
+  { title: 'Se déconnecter', caption: '', icon: 'logout', link: '/logout' }
+])
+
+const filteredLinks = computed(() => {
+  return essentialLinks.value.filter(link => {
+    const matchingRoute = routes.find(r => r.path === link.link)
+    const rolesRequired = matchingRoute?.meta?.requiresRole || []
+    return rolesRequired.length === 0 || rolesRequired.some(role => user.value?.roles.includes(role))
+  })
+})
 </script>
 
 <style>
 .ml-5 {
-  margin-left: 5px;
+  margin-left: 5px
 }
 </style>
