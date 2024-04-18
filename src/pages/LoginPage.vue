@@ -11,19 +11,20 @@
 </template>
 
 <script setup>
-import {useAuthStore} from 'src/stores/auth'
-import {onMounted, ref} from 'vue'
-import {useRouter} from 'vue-router'
-import {useQuasar} from 'quasar'
+import { useAuthStore } from 'src/stores/auth'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 const username = ref('')
 const password = ref('')
 const router = useRouter()
-
 const $q = useQuasar()
+
 const login = async () => {
-  let loggedIn = await useAuthStore().login(username.value, password.value)
-  if (loggedIn) {
+  const authStore = useAuthStore()
+  const { success, message } = await authStore.login(username.value, password.value)
+  if (success) {
     $q.notify({
       message: 'Connecté en tant que ' + username.value,
       icon: 'check',
@@ -33,14 +34,16 @@ const login = async () => {
     router.push('/')
   } else {
     $q.notify({
-      message: 'Mot de passe ou nom d\'utilisateur incorrect',
+      message: message,
       icon: 'report_problem',
       color: 'negative',
       position: 'bottom'
     })
   }
 }
+
 </script>
+
 
 <style scoped>
 .p-5 {
