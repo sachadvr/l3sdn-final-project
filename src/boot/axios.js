@@ -9,6 +9,12 @@ import axios from 'axios'
 // for each client)
 const api = axios.create({baseURL: 'https://api.example.com'})
 
+// Add request interceptor to set Keep-Alive header to true
+api.interceptors.request.use((config) => {
+  config.headers['Keep-Alive'] = 'true'
+  return config
+})
+
 export default boot(({app}) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 

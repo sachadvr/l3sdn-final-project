@@ -118,6 +118,9 @@ onMounted(async () => {
     numberOfManagees.value = userStore.userByManager.length
   }
 
+})
+onMounted(async () => {
+  user.value = await authStore.getCurrentUser()
   if (await interviewStore.fetchInterviews(user.value.id)) {
     if (interviewStore.interviews.some((i) => new Date(i.date) > new Date())) {
       nextPersonalInterview.value = interviewStore.interviews.find((i) => new Date(i.date) > new Date()).date
@@ -129,13 +132,16 @@ onMounted(async () => {
 
 onMounted(async () => {
   user.value = await authStore.getCurrentUser()
-  if (await interviewStore.getInterviewByManager(user.value.id)) {
+  if (await interviewStore.fetchManagerInterviews(user.value.id)) {
     if (interviewStore.managerInterviews.some((i) => new Date(i.date) > new Date())) {
       nextInterview.value = new Date(interviewStore.managerInterviews[0].date).toLocaleDateString()
     } else {
       nextInterview.value = 'Aucun entretien prévu'
     }
   }
+})
+onMounted(async () => {
+  user.value = await authStore.getCurrentUser()
   if (await userStore.getUsers()) {
     let hasManager = userStore.users.find((u) => u.id === user.value.id)?.manager_id
     if (!hasManager) {
