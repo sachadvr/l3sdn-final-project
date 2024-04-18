@@ -198,6 +198,12 @@ const postRows = async (id, data) => {
       position: 'bottom',
       message: 'Entretien ajouté avec succès',
     })
+  }else{
+    $q.notify({
+      color: 'negative',
+      position: 'bottom',
+      message: 'Erreur lors de l\'ajout de l\'entretien',
+    })
   }
 }
 
@@ -208,8 +214,6 @@ const objectif_store = useObjectifsStore()
 const user_store = useUserStore()
 let userList = []
 
-
-// A cause du parallélisme obligé de mettre plusieurs onMounted ou setTimeout, c'est un comportement très bizarre...
 onMounted(async () => {
   user.value = await auth_store.getCurrentUser()
   if (await interviews_store.fetchInterviews(user.value.id)) {
@@ -222,7 +226,6 @@ onMounted(async () => {
     interviewsManager.value = interviews_store.managerInterviews.sort(
       (a, b) => new Date(b.date) - new Date(a.date)
     )
-    console.log(interviewsManager.value)
   }
 
 })
