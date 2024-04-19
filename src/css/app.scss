@@ -13,6 +13,15 @@
   color: var(--q-light) !important;
 }
 
+.bg-light {
+  background-color: var(--q-light, #fff) !important;
+}
 .body--dark .bg-light {
   background-color: var(--q-dark) !important;
+}
+.q-pa-md {
+  padding: 2rem;
+  background: url('../assets/bg.png') no-repeat center center;
+  background-size: cover;
+  height: 100vh;
 }

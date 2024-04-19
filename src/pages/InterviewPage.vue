@@ -133,7 +133,7 @@
     <PopupManager
       v-if="postShowPopup"
       :editedRow="postObj"
-      :selectedKeys="['resume', 'date', 'user_id', 'rating']"
+      :selectedKeys="user.roles.some(r => r === 'ROLE_RH') ? ['rating', 'resume', 'user_id','manager_id', 'date'] : ['rating', 'resume', 'user_id', 'date']"
       @update="postRows"
       @cancel="() => (postShowPopup = false)"
     />
@@ -199,7 +199,8 @@ const postRows = async (id, data) => {
   if (data && data.user_id) {
     data.user_id = parseInt(data.user_id.id)
   }
-  if (data && await interviews_store.postInterview(data, user.value.id)) {
+  let current_user = data.manager_id ? data.manager_id.id : user.value.id
+  if (data && await interviews_store.postInterview(data, current_user)) {
     $q.notify({
       color: 'positive',
       position: 'bottom',
@@ -307,6 +308,7 @@ const openPostPopup = () => {
     rating: 0,
     date: '',
     user_id: '',
+    manager_id: ''
   }
   postShowPopup.value = true
 }
@@ -335,8 +337,16 @@ watch(
 }
 
 .flex {
-  display: flex;
   gap: 2rem;
+}
+
+@media screen and (max-width: 768px) {
+  .no-wrap {
+    flex-wrap: wrap!important;
+  }
+  .flex {
+    flex-direction: column;
+  }
 }
 
 .center {

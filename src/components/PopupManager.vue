@@ -7,7 +7,7 @@
             <q-select
               v-if="key === 'user_id'"
               v-model="form[key]"
-              :label="key"
+              :label="translations[key]"
 
               :options="list_of_users"
               option-label="name"
@@ -16,7 +16,7 @@
             <q-select
               v-else-if="key === 'manager_id'"
               v-model="form[key]"
-              :label="key"
+              :label="translations[key]"
               :options="list_of_managers"
               option-label="name"
               option-value="id"
@@ -24,13 +24,13 @@
             <q-select
               v-else-if="key === 'role'"
               v-model="form[key]"
-              :label="key"
+              :label="translations[key]"
               :options="['ROLE_USER', 'ROLE_MANAGER', 'ROLE_RH']"
             />
             <q-date
               v-else-if="key === 'date'"
               v-model="form[key]"
-              :label="key"
+              :label="translations[key]"
               minimal
             />
             <q-rating
@@ -44,7 +44,7 @@
             <q-input
               v-else
               v-model="form[key]"
-              :label="key"
+              :label="translations[key]"
             />
           </div>
         </q-card-section>
@@ -88,6 +88,23 @@ const list_of_managers = ref([])
 const user = ref({})
 const deleteMode = ref(false)
 
+const translations = {
+  user_id: 'Utilisateur',
+  manager_id: 'Manager',
+  role: 'Rôle',
+  date: 'Date',
+  resume: 'Résumé/Description',
+  rating: 'Note',
+  name: 'Nom',
+  firstname: 'Prénom',
+  job: 'Emploi',
+  salary: 'Salaire',
+  phone: 'Téléphone',
+  address: 'Adresse',
+  username: 'Nom d\'utilisateur',
+  password: 'Mot de passe',
+}
+
 const cancel = () => {
   persistent.value = false
   emits('cancel')
@@ -120,8 +137,8 @@ const deleteItem = () => {
 
 <style>
 .mt-1 {
-  margin-top: 2rem;
-
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .q-date {

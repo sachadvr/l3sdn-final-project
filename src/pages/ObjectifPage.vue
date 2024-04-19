@@ -68,7 +68,7 @@
           user.roles.some((r) => r === 'ROLE_MANAGER' || r === 'ROLE_RH')
         "
         color="primary"
-        label="Ajouter un nouvel entretien"
+        label="Ajouter un nouvel objectif"
         class="q-mt-md"
         @click="openPostPopup()"
       />
@@ -86,7 +86,7 @@
   <PopupManager
     v-if="postShowPopup"
     :editedRow="postObj"
-    :selectedKeys="['resume', 'date', 'user_id']"
+    :selectedKeys="user.roles.some(r => r === 'ROLE_RH') ? ['resume', 'user_id','manager_id', 'date'] : ['resume', 'user_id','date']"
     @update="postRows"
     @cancel="() => (postShowPopup = false)"
   />
@@ -148,7 +148,8 @@ const updateRows = async (id, data) => {
 const postRows = async (id, data) => {
   data.user_id = parseInt(data.user_id.id)
   postShowPopup.value = false
-  if (true === objectif_store.postObjectif(data, user.value.id)) {
+  let current_user = data.manager_id ? data.manager_id.id : user.value.id
+  if (true === await objectif_store.postObjectif(data, current_user)) {
     $q.notify({
       color: 'positive',
       position: 'bottom',
@@ -178,6 +179,7 @@ const openPostPopup = () => {
     resume: '',
     date: '',
     user_id: '',
+    manager_id: ''
   }
   postShowPopup.value = true
 }

@@ -1,8 +1,9 @@
 <template>
+  <div class="bg-light p-5">
   <q-input
     v-model="filter"
     filled
-    placeholder="Search"
+    placeholder="Rechercher un utilisateur"
     dense
     icon="search"
     clearable
@@ -11,9 +12,15 @@
       <q-icon name="search"/>
     </template>
   </q-input>
+  </div>
   <q-table
     :rows="rows.map((r) => ({id: r.id, name: r.name, firstname: r.firstname }))"
     row-key="nom"
+    :visible-columns="['name', 'firstname']"
+    :columns="[
+      {name: 'name', label: 'Nom', align: 'left', field: 'name'},
+      {name: 'firstname', label: 'Prénom', align: 'left', field: 'firstname'},
+    ]"
     flat bordered
     :filter="filter"
     @row-click="onRowClick"
@@ -95,3 +102,9 @@ const deleteRow = async (id) => {
 }
 
 </script>
+
+<style>
+.p-5 {
+  padding: 5px;
+}
+</style>
