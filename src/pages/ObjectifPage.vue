@@ -19,7 +19,7 @@
             Objectif du {{ objectif.date }}
           </div>
           <div class="text-subtitle2">Résumé</div>
-          <div>{{ objectif.resume }}</div>
+          <div v-html="objectif.resume"></div>
         </q-card-section>
       </q-card>
 
@@ -58,7 +58,7 @@
             Objectif du {{ objectif.date }}
           </div>
           <div class="text-subtitle2">Résumé</div>
-          <div>{{ objectif.resume }}</div>
+          <div v-html="objectif.resume"></div>
         </q-card-section>
       </q-card>
       <div v-if="objectifsManager && objectifsManager.length === 0">Aucun objectif enregistré</div>
@@ -160,7 +160,7 @@ const postRows = async (id, data) => {
   $q.notify({
     color: 'negative',
     position: 'bottom',
-    message: 'Erreur lors de l\'ajout de l\'objectif',
+    message: objectif_store.error ? objectif_store.error : 'Erreur lors de l\' ajout de l\'objectif'
   })
 }
 

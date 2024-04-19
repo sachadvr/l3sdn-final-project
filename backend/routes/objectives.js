@@ -76,9 +76,12 @@ router.get('/manager/:managerid/:year', async (req, res) => {
 router.post('/', async (req, res) => {
   const { date, resume, user_id, manager_id } = req.body;
 
+  const requiredFields = ['date', 'resume', 'user_id', 'manager_id'];
+  const missingFields = requiredFields.filter(field => !req.body[field]);
   try {
-    if (!date || !resume || !user_id || !manager_id) {
-      return res.status(400).json({ message: 'Veuillez remplir tous les champs' });
+
+    if (missingFields.length) {
+      return res.status(400).json({ message: `Désolé, il manque des champs obligatoires (${missingFields.join(', ')})`});
     }
 
     const data = await getData('objectifs');

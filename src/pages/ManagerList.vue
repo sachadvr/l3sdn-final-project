@@ -64,7 +64,7 @@ const createRow = async (id, data) => {
     $q.notify({
       type: 'negative',
       position: 'bottom',
-      message: 'Erreur lors de la création de l\'utilisateur.',
+      message: user_store.error ? user_store.error : 'Erreur lors de la création de l\'utilisateur.',
     })
 
     return

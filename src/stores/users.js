@@ -5,7 +5,8 @@ export const useUserStore = defineStore('users', {
   state: () => ({
     users: [],
     currentuser: {},
-    userByManager: []
+    userByManager: [],
+    error: null,
   }),
   getters: {},
   actions: {
@@ -67,8 +68,10 @@ export const useUserStore = defineStore('users', {
         const response = await axios.post('/api/users', data, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
+
         return response.data
       } catch (error) {
+        this.error = error.response.data.message
         return false
       }
     }

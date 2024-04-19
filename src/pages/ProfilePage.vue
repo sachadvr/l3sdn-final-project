@@ -1,6 +1,6 @@
 <template>
   <q-page-container>
-    <q-page padding class="p-5">
+    <q-page class="q-pa-md">
       <q-card>
         <q-card-section>
           Mon profil
@@ -120,5 +120,8 @@ const submitplus = async () => {
 .flex {
   display: flex;
   gap: 1rem;
+}
+.q-page-container {
+  padding-top: 0!important;
 }
 </style>

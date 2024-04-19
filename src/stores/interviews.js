@@ -19,7 +19,7 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false
         return true
       } catch (error) {
-        this.error = error.message
+        this.error = error.response.data.message
         this.isLoading = false
         return false
       }
@@ -34,7 +34,7 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false
         return true
       } catch (error) {
-        this.error = error.message
+        this.error = error.response.data.message
         this.isLoading = false
         return false
       }
@@ -48,7 +48,7 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false
         return response.data
       } catch (error) {
-        this.error = error.message
+        this.error = error.response.data.message
         this.isLoading = false
         return false
       }
@@ -63,7 +63,7 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false
         return response.data
       } catch (error) {
-        this.error = error.message
+        this.error = error.response.data.message
         this.isLoading = false
         return false
       }
@@ -77,7 +77,7 @@ export const useInterviewsStore = defineStore('interviews', {
         this.isLoading = false
         return response.data
       } catch (error) {
-        this.error = error.message
+        this.error = error.response.data.message
         this.isLoading = false
         return false
       }

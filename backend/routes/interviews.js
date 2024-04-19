@@ -34,8 +34,12 @@ router.post('/', async (req, res) => {
   try {
     const data = await getData('interviews');
     const { date, resume, user_id, manager_id, rating } = req.body;
-    if (!date || !resume || !user_id || !manager_id || !rating) {
-      return res.status(400).json({ message: 'Veuillez remplir tous les champs' });
+
+    const requiredFields = ['date', 'resume', 'user_id', 'manager_id', 'rating'];
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+
+    if (missingFields.length) {
+        return res.status(400).json({ message: `Désolé, il manque des champs obligatoires (${missingFields.join(', ')})`});
     }
 
     let newInterview = {

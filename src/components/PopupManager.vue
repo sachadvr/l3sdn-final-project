@@ -41,7 +41,18 @@
               :max="5"
               color="primary"
             />
-            <q-input
+
+            <q-editor
+              v-else-if="key === 'resume'"
+              v-model="form[key]"
+              :label="translations[key]"
+              :toolbar="[
+                ['bold', 'italic', 'underline', 'strike'],
+                ['unordered', 'ordered', 'indent', 'outdent', 'quote']
+              ]"
+              class="mt-1"
+            />
+              <q-input
               v-else
               v-model="form[key]"
               :label="translations[key]"
@@ -153,4 +164,5 @@ const deleteItem = () => {
 .width-fit {
   width: 1200px !important;
 }
+
 </style>

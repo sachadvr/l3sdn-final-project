@@ -35,7 +35,7 @@
                     Interview du {{ interview.date }}
                   </div>
                   <div class="text-subtitle2">Résumé</div>
-                  <div>{{ interview.resume }}</div>
+                  <div v-html="interview.resume"></div>
                   <q-rating
                     v-model="interview.rating"
                     size="2em"
@@ -84,7 +84,7 @@
                     Interview du {{ interview.date }}
                   </div>
                   <div class="text-subtitle2">Résumé</div>
-                  <div>{{ interview.resume }}</div>
+                  <div v-html="interview.resume"></div>
                   <q-rating
                     v-model="interview.rating"
                     size="2em"
@@ -210,7 +210,7 @@ const postRows = async (id, data) => {
     $q.notify({
       color: 'negative',
       position: 'bottom',
-      message: 'Erreur lors de l\'ajout de l\'entretien',
+      message: interviews_store.error ? interviews_store.error : 'Erreur lors de l\'ajout de l\'entretien',
     })
   }
 }

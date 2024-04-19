@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { getData, saveData } = require('../utils/fileUtils')
+const {getData, saveData} = require('../utils/fileUtils')
 
 const isGranted = (user, role) => user && user.role === role
 
@@ -10,7 +10,7 @@ const assignNewId = (data) => {
 
 router.get('/', async (req, res) => {
   try {
-    const { role, manager_id, all } = req.query
+    const {role, manager_id, all} = req.query
     const data = await getData('users')
 
     if (role) {
@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
       name: u.name, firstname: u.firstname, job: u.job
     })))
   } catch (error) {
-    res.status(500).json({ message: 'Failed to retrieve users', error: error.message })
+    res.status(500).json({message: 'Failed to retrieve users', error: error.message})
   }
 })
 
@@ -48,12 +48,12 @@ router.get('/:id', async (req, res) => {
     const user = data.find(u => u.id == req.params.id)
 
     if (!user) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' })
+      return res.status(404).json({message: 'Utilisateur non trouvé'})
     }
 
     res.json(user)
   } catch (error) {
-    res.status(500).json({ message: 'Failed to retrieve user', error: error.message })
+    res.status(500).json({message: 'Failed to retrieve user', error: error.message})
   }
 })
 
@@ -63,31 +63,34 @@ router.patch('/:id', async (req, res) => {
     const userIndex = data.findIndex(u => u.id == req.params.id)
 
     if (userIndex === -1) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' })
+      return res.status(404).json({message: 'Utilisateur non trouvé'})
     }
 
-    data[userIndex] = { ...data[userIndex], ...req.body }
+    data[userIndex] = {...data[userIndex], ...req.body}
     await saveData('users', data)
     res.json(data[userIndex])
   } catch (error) {
-    res.status(500).json({ message: 'Failed to update user', error: error.message })
+    res.status(500).json({message: 'Failed to update user', error: error.message})
   }
 })
 
 router.post('/', async (req, res) => {
   try {
     const data = await getData('users')
-    if (!req.body.username || !req.body.role || !req.body.name || !req.body.firstname || !req.body.job || !req.body.salary || !req.body.manager_id || !req.body.address || !req.body.phone) {
-      return res.status(400).json({ message: 'Veuillez remplir tous les champs' })
+    const requiredFields = ['username', 'role', 'name', 'firstname', 'job', 'salary', 'address', 'phone']
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+
+    if (missingFields.length) {
+      return res.status(400).json({message: `Désolé, il manque des champs obligatoires (${missingFields.join(', ')})`});
     }
 
-    const newUser = { id: assignNewId(data), ...req.body, ...{ darkMode: false } }
+    const newUser = {id: assignNewId(data), ...req.body, ...{darkMode: false}}
     data.push(newUser)
 
     await saveData('users', data)
     res.status(201).json(newUser)
   } catch (error) {
-    res.status(500).json({ message: 'Failed to save new user', error: error.message })
+    res.status(500).json({message: 'Failed to save new user', error: error.message})
   }
 })
 
@@ -97,14 +100,14 @@ router.delete('/:id', async (req, res) => {
     const userIndex = data.findIndex(u => u.id == req.params.id)
 
     if (userIndex === -1) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' })
+      return res.status(404).json({message: 'Utilisateur non trouvé'})
     }
 
     data.splice(userIndex, 1)
     await saveData('users', data)
-    res.json({ message: 'Utilisateur supprimé' })
+    res.json({message: 'Utilisateur supprimé'})
   } catch (error) {
-    res.status(500).json({ message: 'Failed to delete user', error: error.message })
+    res.status(500).json({message: 'Failed to delete user', error: error.message})
   }
 })
 

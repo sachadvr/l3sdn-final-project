@@ -110,6 +110,7 @@ const essentialLinks = ref([
   { title: 'Tableau de bord', caption: '', icon: 'home', link: '/' },
   { title: 'Collaborateurs', caption: '', icon: 'people', link: '/manage' },
   { title: 'Mes entretiens', caption: '', icon: 'assignment', link: '/interviews' },
+  { title : 'Mon profil', caption: '', icon: 'account_circle', link: '/profile' },
   { title: 'Se déconnecter', caption: '', icon: 'logout', link: '/logout' }
 ])
 

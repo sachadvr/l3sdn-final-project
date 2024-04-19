@@ -5,6 +5,8 @@ import { getCurrentInstance } from 'vue'
 export const useObjectifsStore = defineStore('objectifs', {
   state: () => ({
     objectifs: [],
+    isLoading: false,
+    error: null,
   }),
   actions: {
     notifyUser(message, type) {
@@ -63,7 +65,7 @@ export const useObjectifsStore = defineStore('objectifs', {
         })
         return true
       } catch (error) {
-        this.notifyUser('negative', 'Impossible d\'ajouter un objectif. Un des arguments est manquant.')
+        this.error = error.response.data.message
         return false
       }
     },
