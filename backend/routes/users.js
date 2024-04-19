@@ -10,22 +10,26 @@ const assignNewId = (data) => {
 
 router.get('/', async (req, res) => {
   try {
-    const { role, manager_id } = req.query
+    const { role, manager_id, all } = req.query
     const data = await getData('users')
 
     if (role) {
       return res.json(data.filter(u => u.role === role))
     }
 
+    if (all) {
+      return res.json(data)
+    }
+
     if (isGranted(req.user, 'ROLE_RH')) {
       return res.json(data.filter(u => u.role === 'ROLE_USER').map(u => ({
-        id: u.id, name: u.name, firstname: u.firstname, job: u.job, salary: u.salary
+        id: u.id, name: u.name, firstname: u.firstname, job: u.job, salary: u.salary, address: u.address, phone: u.phone
       })))
     }
 
     if (manager_id) {
       return res.json(data.filter(u => u.manager_id == manager_id).map(u => ({
-        id: u.id, name: u.name, firstname: u.firstname, job: u.job, salary: u.salary
+        id: u.id, name: u.name, firstname: u.firstname, job: u.job, salary: u.salary, address: u.address, phone: u.phone
       })))
     }
 
@@ -73,8 +77,7 @@ router.patch('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const data = await getData('users')
-
-    if (!req.body.username || !req.body.role) {
+    if (!req.body.username || !req.body.role || !req.body.name || !req.body.firstname || !req.body.job || !req.body.salary || !req.body.manager_id || !req.body.address || !req.body.phone) {
       return res.status(400).json({ message: 'Veuillez remplir tous les champs' })
     }
 

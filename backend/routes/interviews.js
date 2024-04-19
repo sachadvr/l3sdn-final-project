@@ -3,10 +3,15 @@ const router = express.Router();
 const { getData, saveData } = require('../utils/fileUtils');
 
 const handleError = (res, message, error = {}) => res.status(500).json({ message, error: error.message });
+const isGranted = (user, role) => user && user.role === role;
 
 router.get('/', async (req, res) => {
   try {
     const data = await getData('interviews');
+
+    if (isGranted(req.user, 'ROLE_RH')) {
+      return res.json(data);
+    }
     const { manager_id } = req.query;
     const result = manager_id ? data.filter(i => i.manager_id === parseInt(manager_id)) : data;
     res.json(result);

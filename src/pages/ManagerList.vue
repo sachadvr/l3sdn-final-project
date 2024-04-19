@@ -11,8 +11,9 @@
     <PopupManager
       v-if="postShowPopup"
       :editedRow="editedUser"
-      :selectedKeys="['name', 'firstname', 'username', 'password', 'role', 'manager_id', 'job', 'salary']"
+      :selectedKeys="['name', 'firstname', 'username', 'password', 'role', 'manager_id', 'job', 'salary', 'phone', 'address']"
       @update="createRow"
+      @cancel="() => postShowPopup = false"
     />
   </div>
 </template>
@@ -54,32 +55,26 @@ const newUser = () => {
 }
 const createRow = async (id, data) => {
   postShowPopup.value = false
-  if (!data.name || !data.firstname || !data.username || !data.role || !data.manager_id || !data.job || !data.salary) {
-    $q.notify({
-      type: 'negative',
-      position: 'bottom',
-      message: 'Veuillez remplir tous les champs nécessaires.',
-    })
-    return
-  }
-  
-  if (data.manager_id) {
+
+  if (data && data.manager_id) {
     data.manager_id = parseInt(data.manager_id.id)
   }
-  if (user_store.createuser(data)) {
-    $q.notify({
-      type: 'positive',
-      position: 'bottom',
-      message: 'Utilisateur ajouté avec succès',
-    })
-  } else {
+  let success = await user_store.createuser(data)
+  if (false === success) {
     $q.notify({
       type: 'negative',
       position: 'bottom',
       message: 'Erreur lors de la création de l\'utilisateur.',
     })
+
+    return
   }
-}
+   $q.notify({
+      type: 'positive',
+      position: 'bottom',
+      message: 'Utilisateur ajouté avec succès',
+    })
+    }
 
 
 </script>

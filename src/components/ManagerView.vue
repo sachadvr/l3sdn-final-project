@@ -21,8 +21,8 @@
   </q-table>
   <EditForm v-if="show"
             :editedRow="editedRow" :delete="true"
-
-            :selected-keys="['id','name','firstname','job', 'salary']" @update="updateRows"
+            :selected-keys="['id','name','firstname','job', 'salary', 'phone', 'address']" @update="updateRows"
+            @cancel="() => show = false"
             @on-delete="deleteRow"
 
   />

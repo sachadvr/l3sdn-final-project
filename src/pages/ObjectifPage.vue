@@ -6,7 +6,7 @@
       <q-card
         v-for="objectif in objectifsPerso"
         :key="objectif.id"
-        class="mx-2" :class="{'cursor-pointer': user.roles.some(r => r === 'ROLE_MANAGER')}"
+        class="mx-2" :class="{'cursor-pointer': user.roles.some(r => r === 'ROLE_MANAGER' || r === 'ROLE_RH')}"
         @click="openObjectif(objectif)"
       >
         <q-card-section>
@@ -28,7 +28,7 @@
     <q-page-container
       v-if="
         user &&
-        user.roles.some((r) => r === 'ROLE_MANAGER')
+        user.roles.some((r) => r === 'ROLE_MANAGER' || r === 'ROLE_RH')
       "
     >
       <div class="text-h6">Objectif de l'équipe</div>
@@ -36,13 +36,18 @@
       <q-card
         v-for="objectif in objectifsManager"
         :key="objectif.id"
-        class="mx-2" :class="{'cursor-pointer': user.roles.some(r => r === 'ROLE_MANAGER')}"
+        class="mx-2" :class="{'cursor-pointer': user.roles.some(r => r === 'ROLE_MANAGER' || r === 'ROLE_RH')}"
         @click="openObjectif(objectif)"
       >
         <q-card-section>
           <div v-if="userList && userList.find((u) => u.id == objectif.user_id)" class="text-primary center p-5">
             {{ userList.find((u) => u.id == objectif.user_id).name }}
             {{ userList.find((u) => u.id == objectif.user_id).firstname }}
+          </div>
+          <div v-if="user && user.roles.some(r => r === 'ROLE_RH') && userList && userList.find((u) => u.id == objectif.manager_id)" class="text-primary center p-5">
+            Manager :
+            {{userList.find((u) => u.id == objectif.manager_id).name }}
+            {{userList.find((u) => u.id == objectif.manager_id).firstname}}
           </div>
           <div
             class="text-h6 w-fit"
@@ -60,7 +65,7 @@
       <q-btn
         v-if="
           user &&
-          user.roles.some((r) => r === 'ROLE_MANAGER')
+          user.roles.some((r) => r === 'ROLE_MANAGER' || r === 'ROLE_RH')
         "
         color="primary"
         label="Ajouter un nouvel entretien"
@@ -76,12 +81,14 @@
     :delete="true"
     @on-delete="deleteRow"
     @update="updateRows"
+    @cancel="() => (editShowPopup = false)"
   />
   <PopupManager
     v-if="postShowPopup"
     :editedRow="postObj"
     :selectedKeys="['resume', 'date', 'user_id']"
     @update="postRows"
+    @cancel="() => (postShowPopup = false)"
   />
 </template>
 
@@ -117,6 +124,12 @@ const postObj = ref(null)
 const userList = ref([])
 onMounted(async () => {
   user.value = await auth_store.getCurrentUser()
+  if (user.value.roles.some((r) => r === 'ROLE_RH')) {
+    await user_store.getUsers({all: true})
+    userList.value = user_store.users
+
+    return
+  }
   if (await user_store.getUserByManager(user.value.id)) {
     userList.value = user_store.userByManager
   }
@@ -134,14 +147,20 @@ const updateRows = async (id, data) => {
 
 const postRows = async (id, data) => {
   data.user_id = parseInt(data.user_id.id)
-  if (objectif_store.postObjectif(data, user.value.id)) {
+  postShowPopup.value = false
+  if (true === objectif_store.postObjectif(data, user.value.id)) {
     $q.notify({
       color: 'positive',
       position: 'bottom',
       message: 'Objectif ajouté avec succès',
     })
+    return
   }
-  postShowPopup.value = false
+  $q.notify({
+    color: 'negative',
+    position: 'bottom',
+    message: 'Erreur lors de l\'ajout de l\'objectif',
+  })
 }
 
 const isOutOfDate = (date) => {
@@ -149,7 +168,7 @@ const isOutOfDate = (date) => {
 }
 
 const openObjectif = (interview) => {
-  if (user.value.roles.some((r) => r === 'ROLE_MANAGER')) {
+  if (user.value.roles.some((r) => r === 'ROLE_MANAGER' || r === 'ROLE_RH')) {
     editedObj.value = interview
     editShowPopup.value = true
   }

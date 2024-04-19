@@ -21,9 +21,10 @@ export const useUserStore = defineStore('users', {
       }
     }
     ,
-    async getUsers() {
+    async getUsers(filters = {}) {
       try {
-        const response = await axios.get('/api/users', {
+
+        const response = await axios.get('/api/users?'+new URLSearchParams(filters), {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         this.users = response.data

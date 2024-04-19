@@ -29,13 +29,13 @@ export const useAuthStore = defineStore('auth', {
         localStorage.setItem('token', token)
         return { success: true }
       } catch (error) {
-        return { success: false, message: 'Login failed. Please check your username and password.' }
+        return { success: false, message: 'Identifiant ou mot de passe incorrect' }
       }
     },
     logout() {
       this.user = null
       localStorage.removeItem('token')
-      return { success: true, message: 'Logged out successfully.' }
+      return { success: true, message: 'Vous avez été déconnecté.' }
     },
     async verifyToken() {
       try {

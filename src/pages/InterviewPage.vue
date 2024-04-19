@@ -22,7 +22,7 @@
               <q-card
                 v-for="interview in interviewsPerso"
                 :key="interview.id"
-                class="mx-2" :class="{'cursor-pointer': user.roles.some(r => r === 'ROLE_MANAGER')}"
+                class="mx-2" :class="{'cursor-pointer': user.roles.some(r => r === 'ROLE_MANAGER' || r === 'ROLE_RH')}"
                 @click="openInterview(interview)"
               >
                 <q-card-section>
@@ -51,7 +51,7 @@
               v-if="
                 user &&
                 user.roles.some(
-                  (r) => r === 'ROLE_MANAGER'
+                  (r) => r === 'ROLE_MANAGER' || r === 'ROLE_RH'
                 )
               "
             >
@@ -64,11 +64,16 @@
                 @click="openInterview(interview)"
               >
                 <q-card-section>
-                  <div class="text-primary center p-5">
+                  <div v-if="userList && userList.find((u) => u.id === interview.user_id)" class="text-primary center p-5" >
                     {{
                       userList.find((u) => u.id === interview.user_id).firstname
                     }}
                     {{ userList.find((u) => u.id === interview.user_id).name }}
+                  </div>
+                  <div v-if="user && user.roles.some(r => r === 'ROLE_RH') && userList && userList.find((u) => u.id == interview.manager_id)" class="text-primary center p-5">
+                    Manager :
+                    {{userList.find((u) => u.id == interview.manager_id).name }}
+                    {{userList.find((u) => u.id == interview.manager_id).firstname}}
                   </div>
                   <div
                     class="text-h6 w-fit"
@@ -95,7 +100,7 @@
                 v-if="
                   user &&
                   user.roles.some(
-                    (r) => r === 'ROLE_MANAGER'
+                    (r) => r === 'ROLE_MANAGER' || r === 'ROLE_RH'
                   )
                 "
                 color="primary"
@@ -123,12 +128,14 @@
       :delete="true"
       @on-delete="deleteRow"
       @update="updateRows"
+      @cancel="() => (editShowPopup = false)"
     />
     <PopupManager
       v-if="postShowPopup"
       :editedRow="postObj"
       :selectedKeys="['resume', 'date', 'user_id', 'rating']"
       @update="postRows"
+      @cancel="() => (postShowPopup = false)"
     />
   </div>
 </template>
@@ -221,6 +228,10 @@ onMounted(async () => {
       (a, b) => new Date(b.date) - new Date(a.date)
     )
   }
+})
+
+onMounted(async () => {
+  user.value = await auth_store.getCurrentUser()
 
   if (await interviews_store.fetchManagerInterviews(user.value.id)) {
     interviewsManager.value = interviews_store.managerInterviews.sort(
@@ -240,6 +251,11 @@ onMounted(async () => {
   ) {
     objectifs.value = objectif_store.objectifs
   }
+
+})
+onMounted(async () => {
+  user.value = await auth_store.getCurrentUser()
+
   if (
     await objectif_store.fetchObjectifs(user.value.id, {
       year: new Date().getFullYear() + 1,
@@ -247,8 +263,6 @@ onMounted(async () => {
   ) {
     objectifsNextYear.value = objectif_store.objectifs
   }
-
-
 })
 
 onMounted(async () => {
@@ -257,7 +271,10 @@ onMounted(async () => {
     user.value.id,
     new Date().getFullYear()
   )
+})
 
+onMounted(async () => {
+  user.value = await auth_store.getCurrentUser()
   objectifsNextYearManager.value = await objectif_store.fetchObjectifsByManager(
     user.value.id,
     new Date().getFullYear() + 1
@@ -265,7 +282,7 @@ onMounted(async () => {
 })
 
 onMounted(async () => {
-  if (await user_store.getUsers()) {
+  if (await user_store.getUsers({all: true})) {
     userList = user_store.users
   }
 })
@@ -277,7 +294,7 @@ const isOutOfDate = (date) => {
 const openInterview = (interview) => {
   if (
     user.value.roles.some(
-      (r) => r === 'ROLE_MANAGER'
+      (r) => r === 'ROLE_MANAGER' || r === 'ROLE_RH'
     )
   ) {
     editedObj.value = interview

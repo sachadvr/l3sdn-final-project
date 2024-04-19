@@ -9,6 +9,8 @@
     "firstname": "Romain",
     "job": "Manager",
     "salary": 50000,
+    "phone": "06 12 34 56 73",
+    "address": "1 rue de la paix, 75001 Paris",
     "darkmode": true
   },
   {
@@ -21,6 +23,8 @@
     "firstname": "Charlotte",
     "job": "RH",
     "salary": 51000,
+    "address": "2 rue de la paix, 75001 Paris",
+    "phone": "06 12 34 56 32",
     "darkmode": true
   },
   {
@@ -30,9 +34,11 @@
     "name": "Dadon",
     "firstname": "Théo",
     "job": "Développeur Fullstack",
+    "address": "2 rue de la paix, 75001 Paris",
     "role": "ROLE_USER",
     "manager_id": 1,
     "salary": "35000",
+    "phone": "06 12 34 32 12",
     "darkmode": true
   },
   {
@@ -41,10 +47,12 @@
     "password": "",
     "name": "Duvivier",
     "firstname": "Sacha",
+    "address": "3 rue de la paix, 75001 Paris",
     "job": "Développeur Fullstack",
     "role": "ROLE_USER",
     "manager_id": 1,
     "salary": 30000,
+    "phone": "06 32 34 32 12",
     "darkmode": true
   },
   {
@@ -53,10 +61,12 @@
     "password": "",
     "name": "Remond",
     "firstname": "Julien",
+    "address": "4 rue de la paix, 75001 Paris",
     "job": "Devops",
     "role": "ROLE_USER",
     "manager_id": 4,
     "salary": "35000",
+    "phone": "06 12 34 32 32",
     "darkmode": false
   },
   {
@@ -66,8 +76,10 @@
     "username": "melene",
     "password": "",
     "role": "ROLE_USER",
+    "address": "5 rue de la paix, 75001 Paris",
     "manager_id": 1,
     "job": "Secrétaire",
+    "phone": "07 22 34 32 52",
     "salary": "18000",
     "darkmode": true
   },
@@ -78,9 +90,25 @@
     "username": "lucas",
     "password": "",
     "role": "ROLE_USER",
+    "phone": "06 43 24 34 52",
     "manager_id": 1,
+    "address": "6 rue de la paix, 75001 Paris",
     "job": "Product Owner",
     "salary": "18000",
     "darkmode": true
+  },
+  {
+    "id": 8,
+    "name": "Tourtelier",
+    "firstname": "Sacha",
+    "username": "tourtel",
+    "password": "",
+    "phone": "07 92 34 39 92",
+    "role": "ROLE_USER",
+    "address": "12 rue de la paix, 59000 Lille",
+    "manager_id": 1,
+    "job": "Secrétaire",
+    "salary": "0",
+    "darkMode": false
   }
 ]

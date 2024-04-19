@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { getData, saveData } = require('../utils/fileUtils');
 
+
+const isGranted = (user, role) => user && user.role === role;
+
 const filterDataByUserAndYear = (data, userId, year) => {
   let filteredData = data.filter(o => o.user_id == userId);
   if (year) {
@@ -59,6 +62,10 @@ router.get('/manager/:managerid/:year', async (req, res) => {
 
   try {
     const data = await getData('objectifs');
+
+    if (isGranted(req.user, 'ROLE_RH')) {
+      return res.json(data.filter(o => o.date.startsWith(year)));
+    }
     const managerObjectifs = data.filter(o => o.manager_id == managerid && o.date.startsWith(year));
     res.json(managerObjectifs);
   } catch (error) {

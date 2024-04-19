@@ -90,17 +90,18 @@ const deleteMode = ref(false)
 
 const cancel = () => {
   persistent.value = false
-  emits('update', false)
+  emits('cancel')
 }
 onMounted(async () => {
   props.selectedKeys.forEach(key => {
     form.value[key] = props.editedRow[key]
   })
-  deleteMode.value = props.delete
   user.value = await auth_store.getCurrentUser()
   if (await user_store.getUserByManager(user.value.id)) {
     list_of_users.value = user_store.userByManager
   }
+
+  deleteMode.value = props.delete
 
   list_of_managers.value = await user_store.getManagers()
 

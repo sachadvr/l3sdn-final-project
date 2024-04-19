@@ -29,10 +29,21 @@
               outlined
             />
             <q-input
+              v-model="user.address"
+              label="Votre adresse"
+              outlined
+            />
+            <q-input
+              v-model="user.phone"
+              label="Votre numéro de téléphone"
+              outlined
+            />
+            <q-input
               v-model="user.password"
               label="Votre mot de passe"
               outlined
             />
+
             <q-btn
               type="submit"
               label="Enregistrer"
@@ -65,6 +76,8 @@ const user = ref({
   firstname: '',
   name: '',
   job: '',
+  address: '',
+  phone: '',
   password: '',
 })
 const authStore = useAuthStore()
