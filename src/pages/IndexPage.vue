@@ -88,6 +88,27 @@
         </q-card-subtitle>
       </q-card-section>
     </q-card>
+
+    <q-card v-else class="mt-20">
+      <q-card-section>
+        <span class="text-h5">
+          Bienvenue sur votre espace personnel
+        </span>
+      </q-card-section>
+      <q-card-section>
+        <p class="text-larger">
+          Dans le cadre de notre projet en VueJS, nous avons développé cette plateforme afin de vous offrir une expérience utilisateur intuitive et complète.
+          <br/>
+          Nous avons mis en œuvre nos compétences pour concevoir un outil qui vous permet de suivre vos objectifs, vos entretiens et vos informations personnelles en toute simplicité.
+          <br/>
+          Pour profiter pleinement de toutes les fonctionnalités offertes par notre plateforme, nous vous invitons à vous connecter en tant que manager ou RH. <br/>Cela vous permettra d'accéder à toutes les options disponibles et de tirer le meilleur parti de votre expérience utilisateur.
+        </p>
+
+        <p>
+          Par Theo, Melene, Lucas et Sacha, étudiants en L3 SDN à l'Université de Lille.
+        </p>
+      </q-card-section>
+    </q-card>
   </q-page>
 </template>
 
@@ -201,5 +222,9 @@ $animation-delay: 0.2s;
 
 .mt-20 {
   margin-top: 40px;
+}
+
+.text-larger {
+  font-size: 1rem;
 }
 </style>

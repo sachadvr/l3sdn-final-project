@@ -10,7 +10,7 @@
   {
     "id": 2,
     "date": "2024/04/16",
-    "resume": "RAS, il fait son travail correctement",
+    "resume": "<u>RAS, il fait son travail correctement</u>",
     "user_id": 1,
     "rating": 5,
     "manager_id": 2
